@@ -1,0 +1,85 @@
+<div layout="column" ng-cloak ng-init="vm.$onInit()">
+    <md-content>
+        <form name="projectForm" style="min-width:500px;" class="form"
+              ng-submit="projectForm.$valid && vm.submit()" novalidate>
+            <md-toolbar class="md-default">
+                <div class="md-toolbar-tools">
+                    <h2>{{vm.title}}</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button md-primary" ng-click="vm.cancel()">
+                        <md-icon aria-label="Close dialog">
+                            <i class="iconfont icon-delete2"></i>
+                        </md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">平台名：</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input required name="lastName" aria-label="lastName" ng-model="vm.scenario.lastName">
+                        <div ng-messages="projectForm.lastName.$error">
+                            <div ng-message="required">必填</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">授权码：</label>
+                </div>
+                <div flex="40">
+                    <md-input-container class="md-block">
+                        <input required name="password" aria-label="password" ng-model="vm.scenario.password">
+                    </md-input-container>
+                </div>
+                <div flex="10">
+                   <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+                        <md-button class="md-primary" name="password" aria-label="password" ng-model="vm.scenario.password">自动生成</md-button>
+                    </section>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">负责人：</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input required name="jobArea" aria-label="jobArea" ng-model="vm.scenario.jobArea">
+                        <div ng-messages="projectForm.jobArea.$error">
+                            <div ng-message="required">必填</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label>是否邮件通知</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block radio">
+                        <md-radio-group ng-model="vm.scenario.protocol">
+                            <md-radio-button value="No"  class="md-primary">否</md-radio-button>
+                            <md-radio-button value="yes" class="md-primary">是</md-radio-button>
+                        </md-radio-group>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <md-dialog-actions layout="row">
+                <span flex></span>
+                <md-button class="md-primary md-ok" type="submit">
+                    保 存
+                </md-button>
+                <md-button class="md-default md-cancel" ng-click="vm.cancel()">
+                    取 消
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-content>
+</div>

@@ -1,0 +1,197 @@
+<style>
+    md-checkbox.md-checked .md-icon{
+        background-color: #004994;
+    }
+</style>
+<div layout="column" ng-cloak ng-init="vm.$onInit()">
+    <md-content>
+        <form name="projectForm" style="min-width:1000px;" class="form" ng-submit="projectForm.$valid && vm.submit()"
+              novalidate>
+            <md-toolbar class="md-default">
+                <div class="md-toolbar-tools">
+                    <h2>添加规则配置</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button md-primary" ng-click="vm.cancel()">
+                        <md-icon aria-label="Close dialog">
+                            <i class="iconfont icon-delete2"></i>
+                        </md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+            <div layout="row" layout-wrap>
+                <div flex="15" class="label-text">
+                    <label class="required">当前规则集</label>
+                </div>
+                <div flex="20">
+                    <md-input-container class="md-block">
+                        <input required name="lastName" ng-model="vm.modify.lastName" aria-label="lastName">
+                    </md-input-container>
+                </div>
+            </div>
+            <!--<div layout="row" layout-wrap>
+                <div flex="15" class="label-text">
+                    <label class="required">默认防护动作</label>
+                </div>
+                <div flex="20">
+                    <md-input-container class="md-block radio">
+                        <md-radio-group ng-model="vm.search.attack">
+                            <md-radio-button value="Monitor" class="md-primary">监控动作</md-radio-button>
+                            <md-radio-button value="Maximum" class="md-primary">最高防护动作</md-radio-button>
+                        </md-radio-group>
+                    </md-input-container>
+                </div>
+            </div>-->
+
+            <md-card class="search-section">
+                <div layout="row">
+                    <md-input-container flex="none" style="margin-top: 20px;">
+                        <label>规则名</label>
+                        <input name="clientName" ng-model="vm.search.name">
+                    </md-input-container>
+
+                    <md-input-container flex="none" style="min-width: 120px;margin-top: 20px;">
+                        <label>攻击类型</label>
+                        <md-select name="clientName" ng-model="vm.search.attack">
+                            <md-option value="">所有</md-option>
+                            <md-option value="SQL">SQL注入</md-option>
+                            <md-option value="XSS">XSS</md-option>
+                            <md-option value="webshell">webshell</md-option>
+                        </md-select>
+                    </md-input-container>
+
+                    <md-input-container flex="none" style="min-width: 120px;margin-top: 20px;">
+                        <label>最高防护动作</label>
+                        <md-select name="clientName" ng-model="vm.search.state">
+                            <md-option value="">所有</md-option>
+                            <md-option value="MonitorT">监控</md-option>
+                            <md-option value="interceptT">拦截</md-option>
+                            <md-option value="sealIpT">封IP</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container flex="none" class="search-container">
+                        <a class="md-primary btn-operator btn-lg" ng-click="vm.searchData()">
+                            <i class="iconfont icon-search"></i>
+                            查询
+                        </a>
+                    </md-input-container>
+                </div>
+            </md-card>
+
+            <md-card class="table-section">
+                <md-toolbar class="md-default">
+                    <div class="md-toolbar-tools">
+                        <h2>未开启规则列表</h2>
+                    </div>
+                </md-toolbar>
+
+                <!--<md-toolbar class="module-table-toolbar alternate"
+                            ng-show="vm.options.rowSelection && vm.selected.length">
+                    <div class="module-toolbar-tools">
+                        <span>选择了{{vm.selected.length}}条记录</span>
+                        <div flex></div>
+                        <span class="batch-operator">
+                            <label>批量操作</label>
+                        <md-input-container flex="none">
+                            <md-select ng-model="vm.batch_operator" ng-change="vm.batch_handle()"
+                                       style="min-width: 96px" placeholder="请选择">
+                                <md-option value="Preservation ">保存</md-option>
+                            </md-select>
+                        </md-input-container>
+                        </span>
+                    </div>
+                </md-toolbar>-->
+
+                <md-table-container>
+                    <table md-table
+                           md-row-select="vm.options.rowSelection"
+                           multiple="{{vm.options.multiSelect}}"
+                           ng-model="vm.selected"
+                           md-progress="vm.promise">
+                        <thead ng-if="!vm.options.decapitate" md-head md-on-reorder="logOrder">
+                        <tr md-row>
+                            <th md-column><span>序号</span></th>
+                            <th md-column><span>规则名</span></th>
+                            <th md-column><span>攻击类型</span></th>
+                            <th md-column><span>描述</span></th>
+                            <th md-column>
+                                <span>防护动作</span>
+                                <md-button class="md-icon-button" aria-label="edit"
+                                           ng-click="ruleT.showDialog($event,dessert)" style="width: 24px;">
+                                    <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                    <md-tooltip md-direction="bottom">监控动作</md-tooltip>
+                                </md-button>
+                                <md-button class="md-icon-button" aria-label="edit"
+                                           ng-click="ruleT.showDialog($event,dessert)" style="width: 24px;">
+                                    <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                    <md-tooltip md-direction="bottom">最高防护动作</md-tooltip>
+                                </md-button>
+                            </th>
+                            <th md-column><span>当前防护状态</span></th>
+                            <th md-column><span>建议配置</span></th>
+
+                        </tr>
+                        </thead>
+                        <tbody md-body>
+                        <tr md-row
+                            md-select="dessert"
+                            md-on-select="logItem"
+                            ng-repeat="dessert in vm.desserts.data | limitTo: vm.query.limit : (vm.query.page -1) * vm.query.limit">
+                            <td md-cell>{{dessert.id}}</td>
+                            <td md-cell>{{dessert.ruleName}}</td>
+                            <td md-cell>{{dessert.attackType}}</td>
+                            <td md-cell>{{dessert.description}}</td>
+                            <td md-cell>
+                                <select name="type" ng-model="vm.search.protectAct">
+                                    <option value="">选择</option>
+                                    <option value="MonitorT">监控</option>
+                                    <option value="interceptT">拦截</option>
+                                </select>
+                            </td>
+                            <td md-cell>{{dessert.maxProtectAct}}</td>
+                            <td md-cell>{{dessert.suggestConf}}</td>
+                        </tr>
+                        <tr ng-if="vm.desserts.data.length === 0">
+                            <td colspan="7">
+                                <div class="empty-tips">
+                                    <i class="iconfont icon-no"></i>
+                                    <label>没有查询到数据！</label>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+
+                <md-table-pagination
+                        md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                        md-limit="vm.query.limit" md-limit-options="vm.limitOptions"
+                        md-page="vm.query.page"
+                        md-total="{{vm.desserts.count}}" md-page-select="vm.options.pageSelect"
+                        md-boundary-links="vm.options.boundaryLinks"
+                        md-on-paginate="vm.logPagination"></md-table-pagination>
+
+                <md-dialog-actions layout="row">
+                    <span flex></span>
+                    <!--<md-button class="md-primary"
+                               ng-model="vm.batch_operator"
+                               ng-change="vm.batch_handle()"
+                               >
+                        <span value="Preservation">保 存</span>
+                    </md-button>-->
+                    <md-button class="md-primary md-ok" type="submit">
+                        保 存
+                    </md-button>
+                    <!--<md-input-container flex="none">
+                        <md-select ng-model="vm.batch_operator" ng-change="vm.batch_handle()"
+                                   style="min-width: 96px" placeholder="请选择">
+                            <md-option value="Preservation">保 存</md-option>
+                        </md-select>
+                    </md-input-container>-->
+                    <md-button class="md-default md-cancel" ng-click="vm.cancel()">
+                        取 消
+                    </md-button>
+                </md-dialog-actions>
+            </md-card>
+        </form>
+    </md-content>
+</div>

@@ -1,0 +1,165 @@
+<div layout="column" ng-cloak ng-init="vm.$onInit()">
+    <md-content>
+        <form name="projectForm" style="min-width:500px;" class="form"
+              ng-submit="projectForm.$valid && vm.submit()" novalidate>
+            <md-toolbar class="md-default">
+                <div class="md-toolbar-tools">
+                    <h2>{{vm.title}}</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button md-primary" ng-click="vm.cancel()">
+                        <md-icon aria-label="Close dialog">
+                            <i class="iconfont icon-delete2"></i>
+                        </md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">IP掩码</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input required name="ipMask" aria-label="ipMask" ng-model="vm.bwList.ipMask">
+                        <div ng-messages="projectForm.ipMask.$error">
+                            <div ng-message="required">必填</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">IP类型</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block radio">
+                        <md-select name="type" ng-model="vm.bwList.listType" style="max-width: 266px;">
+                            <md-option value="BLACK">黑名单</md-option>
+                            <md-option value="WHITE">白名单</md-option>
+                        </md-select>
+
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">过期时间</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <!--<md-datepicker ng-model="vm.time" md-placeholder="操作时间"></md-datepicker>-->
+                        <input ng-model="vm.bwList.expireTime" aria-label="expireTime"> 
+                         <!-- <time-ranger ng-model="vm.bwList.expireTime" placeholder="时间范围"></time-ranger> -->
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">描述</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input required name="description" aria-label="description" ng-model="vm.bwList.description">
+                        <div ng-messages="projectForm.description.$error">
+                            <div ng-message="required">必填</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+            <div ng-show="vm.table">
+                <md-toolbar class="md-default" style="margin-top: 50px;">
+                    <div class="md-toolbar-tools">
+                        <h2 style="color: #004994;">*导入黑名单列表文件格式错误如下，请按正确格式导入文件</h2>
+                    </div>
+                </md-toolbar>
+
+                <!-- 黑名单 -->
+                <table md-table
+                       md-row-select="vm.options.rowSelection"
+                       multiple="{{vm.options.multiSelect}}"
+                       ng-model="vm.selected"
+                       md-progress="vm.promise">
+                    <md-toolbar class="md-default" style="min-height: 40px!important; margin-top: -10px;" >
+                        <div class="md-toolbar-tools">
+                            <h2>存在冲突的ip黑名单列表：</h2>
+                        </div>
+                    </md-toolbar>
+                    <thead ng-if="!vm.options.decapitate" md-head md-on-reorder="logOrder">
+                    <tr md-row>
+                        <th md-column><span>IP段</span></th>
+                        <th md-column><span>过期时间</span></th>
+                    </tr>
+                    </thead>
+                    <tbody md-body>
+                    <tr md-row
+                        md-select="dessert"
+                        md-on-select="logItem"
+                        ng-repeat="dessert in vm.desserts.data | limitTo: vm.query.limit : (vm.query.page -1) * vm.query.limit">
+                        <td md-cell>{{dessert.ip}}</td>
+                        <td md-cell>{{dessert.expireTime}}</td>
+                    </tr>
+                    <tr ng-if="vm.desserts.data.length === 0">
+                        <td colspan="7">
+                            <div class="empty-tips">
+                                <i class="iconfont icon-no"></i>
+                                <label>没有查询到数据！</label>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+                <!-- 白名单 -->
+                <table md-table
+                       md-row-select="vm.options.rowSelection"
+                       multiple="{{vm.options.multiSelect}}"
+                       ng-model="vm.selected"
+                       md-progress="vm.promise">
+                    <md-toolbar class="md-default" style="min-height: 40px!important; margin-top: -10px;" >
+                        <div class="md-toolbar-tools">
+                            <h2>存在冲突的ip白名单列表：</h2>
+                        </div>
+                    </md-toolbar>
+                    <thead ng-if="!vm.options.decapitate" md-head md-on-reorder="logOrder">
+                    <tr md-row>
+                        <th md-column><span>IP段</span></th>
+                        <th md-column><span>过期时间</span></th>
+                    </tr>
+                    </thead>
+                    <tbody md-body>
+                    <tr md-row
+                        md-select="dessert"
+                        md-on-select="logItem"
+                        ng-repeat="dessert in vm.desserts.data | limitTo: vm.query.limit : (vm.query.page -1) * vm.query.limit">
+                        <td md-cell>{{dessert.isMask}}</td>
+                        <td md-cell>{{dessert.enpireTime}}</td>
+                    </tr>
+                    <tr ng-if="vm.desserts.data.length === 0">
+                        <td colspan="7">
+                            <div class="empty-tips">
+                                <i class="iconfont icon-no"></i>
+                                <label>没有查询到数据！</label>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <md-dialog-actions layout="row">
+                <span flex></span>
+                <md-button class="md-primary md-ok" type="submit">
+                    保 存
+                </md-button>
+                <md-button class="md-default md-cancel" ng-click="vm.cancel()">
+                    取 消
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-content>
+</div>

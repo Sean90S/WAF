@@ -1,0 +1,21 @@
+{
+  "foo-fest":
+    [
+      {
+        "name": "客户1",
+        "domain": "www.baidu.com",
+        "ip": "192.134.56.77",
+        "waf": "enabled",
+        "modifyUser":"张三",
+        "id":1
+      },
+      {
+        "name": "客户2",
+        "domain": "www.baidu.com",
+        "ip": "192.134.56.77",
+        "waf": "enabled",
+        "modifyUser":"张三",
+        "id":2
+      }
+    ]
+}

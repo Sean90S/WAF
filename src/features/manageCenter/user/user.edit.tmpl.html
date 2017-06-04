@@ -1,0 +1,112 @@
+<div layout="column" ng-cloak ng-init="vm.$onInit()">
+    <md-content>
+        <form name="projectForm" style="min-width:500px;" class="form"
+              ng-submit="projectForm.$valid && vm.submit()" novalidate>
+            <md-toolbar class="md-default">
+                <div class="md-toolbar-tools">
+                    <h2>{{vm.title}}</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button md-primary" ng-click="vm.cancel()">
+                        <md-icon aria-label="Close dialog">
+                            <i class="iconfont icon-delete2"></i>
+                        </md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">用户名：</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input required name="name" aria-label="name" ng-model="vm.user.name">
+                        <div ng-messages="projectForm.name.$error">
+                            <div ng-message="required">必填</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">姓名：</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input required name="firstName" aria-label="firstName" ng-model="vm.user.firstName">
+                        <div ng-messages="projectForm.firstName.$error">
+                            <div ng-message="required">必填</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">所属公司</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input required name="companyName" aria-label="companyName" ng-model="vm.user.companyName">
+                        <div ng-messages="projectForm.companyName.$error">
+                            <div ng-message="required">必填</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">所属部门</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input required name="catchPhraseAdjective" aria-label="catchPhraseAdjective"
+                               ng-model="vm.user.catchPhraseAdjective">
+                        <div ng-messages="projectForm.catchPhraseAdjective.$error">
+                            <div ng-message="required">必填</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">email</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input required name="email" aria-label="email" ng-model="vm.user.email">
+                        <div ng-messages="projectForm.email.$error">
+                            <div ng-message="required">必填</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">角色</label>
+                </div>
+                <div flex="55">
+                    <md-input-container class="md-block">
+                        <label>选择：</label>
+                        <md-select name="bsAdjective" ng-model="user.search.bsAdjective">
+                            <md-option value="">bsAdjective</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+            </div>
+
+
+            <md-dialog-actions layout="row">
+                <span flex></span>
+                <md-button class="md-primary md-ok" type="submit">
+                    保 存
+                </md-button>
+                <md-button class="md-default md-cancel" ng-click="vm.cancel()">
+                    取 消
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-content>
+</div>

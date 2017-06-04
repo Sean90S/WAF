@@ -1,0 +1,153 @@
+<style>
+    md-checkbox.md-checked .md-icon {
+        background-color: #004994;
+    }
+</style>
+<md-content layout="column" flex>
+    <md-card class="search-section">
+        <form>
+            <div layout="row">
+                <md-input-container flex="none">
+                    <label>域名</label>
+                    <input name="clientName" ng-model="domain.search.domainName">
+                </md-input-container>
+                <md-input-container flex="none">
+                    <label>后台IP</label>
+                    <input name="clientName" ng-model="domain.search.backendIP">
+                </md-input-container>
+                <md-input-container flex="none" style="min-width: 120px">
+                    <label>域名创建平台</label>
+                    <md-select name="clientName" ng-model="domain.search.platform">
+                        <md-option value="">所有</md-option>
+                        <md-option value="Cloud">是</md-option>
+                        <md-option value="system">否</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex="none" style="min-width: 120px">
+                    <label>是否转发</label>
+                    <md-select name="clientName" ng-model="domain.search.isForward">
+                        <md-option value="">所有</md-option>
+                        <md-option value="yes">是</md-option>
+                        <md-option value="no">否</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex="none" style="min-width: 120px">
+                    <label>是否开启安全防护</label>
+                    <md-select name="clientName" ng-model="domain.search.isSecurity">
+                        <md-option value="">所有</md-option>
+                        <md-option value="yes">是</md-option>
+                        <md-option value="no">否</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex="none" class="search-container">
+                    <a class="md-primary btn-operator btn-lg" ng-click="domain.searchData()">
+                        <i class="iconfont icon-search"></i>
+                        查询
+                    </a>
+                </md-input-container>
+
+            </div>
+        </form>
+    </md-card>
+    <md-card class="table-section">
+        <md-toolbar class="md-table-toolbar md-default"
+                    ng-hide="domain.options.rowSelection && domain.selected.length">
+            <div class="md-toolbar-tools">
+                <span>客户域名列表</span>
+                <a class="md-primary btn-operator"
+                   ng-click="domain.showDialog($event)">
+                    新 增
+                </a>
+                <div flex></div>
+                <md-button class="md-icon-button" ng-click="domain.refresh()">
+                    <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                    <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-toolbar class="md-table-toolbar alternate"
+                    ng-show="domain.options.rowSelection && domain.selected.length">
+            <div class="md-toolbar-tools">
+                <span>选择了{{domain.selected.length}}条记录</span>
+                <div flex></div>
+                <span class="batch-operator">
+                    <label>批量操作</label>
+                <md-input-container flex="none">
+                    <md-select ng-model="domain.batch_operator" ng-change="domain.batch_handle()"
+                               style="min-width: 96px" placeholder="请选择">
+                        <md-option value="delete">删除</md-option>
+                        <md-option value="enabledWaf">启用WAF</md-option>
+                        <md-option value="disabledWaf">禁用WAF</md-option>
+                        <md-option value="enabled">启用</md-option>
+                        <md-option value="disabled">禁用</md-option>
+                    </md-select>
+                </md-input-container>
+                </span>
+            </div>
+        </md-toolbar>
+
+        <md-table-container>
+            <table md-table
+                   md-row-select="domain.options.rowSelection"
+                   multiple="{{domain.options.multiSelect}}"
+                   ng-model="domain.selected"
+                   md-progress="domain.promise">
+                <thead ng-if="!domain.options.decapitate" md-head md-order="domain.query.order"
+                       md-on-reorder="logOrder">
+                <tr md-row>
+                    <th md-column><span>域名</span></th>
+                    <th md-column><span>后端IP</span></th>
+                    <th md-column><span>引擎组名</span></th>
+                    <th md-column><span>是否安全防护</span></th>
+                    <th md-column><span>是否转发</span></th>
+                    <th md-column><span>平台创建</span></th>
+                    <th md-column><span>操作</span></th>
+                </tr>
+                </thead>
+                <tbody md-body>
+                <tr md-row
+                    md-select="dessert"
+                    md-on-select="logItem"
+                    ng-repeat="dessert in domain.desserts.data | limitTo: domain.query.limit : (queryDomain.query.page -1) * domain.query.limit">
+                    <td md-cell>{{dessert.dommainName}}</td>
+                    <td md-cell>{{dessert.backendIP}}</td>
+                    <td md-cell>{{dessert.engGrpName}}</td>
+                    <td md-cell>{{dessert.isSecurity}}</td>
+                    <td md-cell>{{dessert.isForward}}</td>
+                    <td md-cell>{{dessert.platform}}</td>
+                    <td md-cell class="md-table-operator">
+                        <md-button class="md-icon-button" aria-label="edit"
+                                   ng-click="domain.showDialog($event,dessert)">
+                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">修改</md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="delete"
+                                   ng-click="domain.deleteRecord($event,dessert.id)">
+                            <i class="iconfont icon-remove" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+                <tr ng-if="domain.desserts.data.length === 0">
+                    <td colspan="7">
+                        <div class="empty-tips">
+                            <i class="iconfont icon-no"></i>
+                            <label>没有查询到数据！</label>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+
+        <md-table-pagination
+                md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                md-limit="domain.query.limit" md-limit-options="domain.limitOptions"
+                md-page="domain.query.page"
+                md-total="{{domain.desserts.count}}" md-page-select="domain.options.pageSelect"
+                md-boundary-links="domain.options.boundaryLinks"
+                md-on-paginate="domain.logPagination"></md-table-pagination>
+    </md-card>
+</md-content>
+

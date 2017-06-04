@@ -1,0 +1,179 @@
+<style>
+    md-checkbox.md-checked .md-icon{
+        background-color: #004994;
+    }
+
+    md-tabs md-ink-bar {
+        color: #004994;
+        background: #004994;
+    }
+</style>
+<div layout="column" ng-cloak ng-init="vm.$onInit()">
+    <md-content>
+        <md-tabs md-dynamic-height md-border-bottom>
+            <md-tab label="新增规则集">
+                <form>
+                    <md-card class="search-section">
+                        <div layout="row">
+                            <md-input-container>
+                                <label>规则集名</label>
+                                <input name="clientName" ng-model="ruleT.search.lastName">
+                            </md-input-container>
+                            <md-input-container style="min-width: 400px;">
+                                <label>描述</label>
+                                <input name="clientName" ng-model="ruleT.search.dessert">
+                            </md-input-container>
+
+                        </div>
+
+                        <div layout="row">
+                            <md-input-container flex="none" style="min-width: 120px">
+                                <label>攻击类型</label>
+                                <md-select name="type" ng-model="ruleT.search.attackType">
+                                    <md-option value="">全部</md-option>
+                                    <md-option value="SQL">SQL注入</md-option>
+                                    <md-option value="XSS">XSS</md-option>
+                                    <md-option value="webshell">webshell</md-option>
+                                </md-select>
+                            </md-input-container>
+                            <md-input-container>
+                                <label>规则名</label>
+                                <input name="clientName" ng-model="ruleT.search.ruleName">
+                            </md-input-container>
+
+                            <md-input-container flex="none" style="min-width: 120px">
+                                <label>当前防护状态</label>
+                                <md-select name="type" ng-model="ruleT.search.protectAct">
+                                    <md-option value="">全部</md-option>
+                                    <md-option value="Monitor">监控</md-option>
+                                    <md-option value="intercept">拦截</md-option>
+                                    <md-option value="sealIp">封IP</md-option>
+                                </md-select>
+                            </md-input-container>
+
+                            <md-input-container class="search-container">
+                                <a class="md-primary btn-operator btn-lg" ng-click="ruleT.searchData()">
+                                    <i class="iconfont icon-search"></i>
+                                    查询
+                                </a>
+                            </md-input-container>
+                        </div>
+                    </md-card>
+
+                    <md-card class="table-section">
+                        <md-toolbar class="md-table-toolbar md-default"
+                                    ng-hide="ruleT.options.rowSelection && ruleT.selected.length">
+                            <div class="md-toolbar-tools">
+                                <span>所有规则配置列表</span>
+                                <div flex></div>
+                                <md-button class="md-icon-button" ng-click="ruleT.refresh()">
+                                    <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                                    <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                                </md-button>
+                            </div>
+                        </md-toolbar>
+
+
+                        <md-toolbar class="md-table-toolbar alternate"
+                                    ng-show="ruleT.options.rowSelection && ruleT.selected.length">
+                            <div class="md-toolbar-tools">
+                                <span>选择了{{ruleT.selected.length}}条记录</span>
+                                <div flex></div>
+                            <span class="batch-operator">
+                                <label>批量操作</label>
+                            <md-input-container flex="none">
+                                <md-select ng-model="ruleT.batch_operator" ng-change="ruleT.batch_handle()"
+                                           style="min-width: 96px" placeholder="请选择">
+                                    <md-option value="delete">确定</md-option>
+                                    <md-option value="enabledWaf">取消</md-option>
+                                </md-select>
+                            </md-input-container>
+                            </span>
+                            </div>
+                        </md-toolbar>
+
+                        <md-table-container>
+                            <table md-table
+                                   md-row-select="ruleT.options.rowSelection"
+                                   multiple="{{ruleT.options.multiSelect}}"
+                                   ng-model="ruleT.selected"
+                                   md-progress="ruleT.promise">
+                                <thead ng-if="!ruleT.options.decapitate" md-head md-on-reorder="logOrder">
+                                <tr md-row>
+                                    <th md-column><span>序号</span></th>
+                                    <th md-column><span>规则名</span></th>
+                                    <th md-column><span>攻击类型</span></th>
+                                    <th md-column><span>描述</span></th>
+                                    <th md-column>
+                                        <span>防护动作</span>
+                                        <md-button class="md-icon-button" aria-label="edit"
+                                                   ng-click="ruleT.showDialog($event,dessert)" style="width: 24px;">
+                                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                            <md-tooltip md-direction="bottom">监控动作</md-tooltip>
+                                        </md-button>
+                                        <md-button class="md-icon-button" aria-label="edit"
+                                                   ng-click="ruleT.showDialog($event,dessert)" style="width: 24px;">
+                                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                            <md-tooltip md-direction="bottom">最高防护动作</md-tooltip>
+                                        </md-button>
+                                    </th>
+                                    <th md-column><span>当前防护状态</span></th>
+                                    <th md-column><span>建议配置</span></th>
+                                </tr>
+                                </thead>
+                                <tbody md-body>
+                                <tr md-row
+                                    md-select="dessert"
+                                    md-on-select="logItem"
+                                    ng-repeat="dessert in ruleT.desserts.data | limitTo: ruleT.query.limit : (ruleT.query.page -1) * ruleT.query.limit">
+                                    <td md-cell>{{dessert.id+1}}</td>
+                                    <td md-cell>{{dessert.ruleName}}</td>
+                                    <td md-cell>{{dessert.attackType}}</td>
+                                    <td md-cell>{{dessert.descriType}}</td>
+                                    <td md-cell>
+                                        <select name="type" ng-model="dessert.protectAct">
+                                            <option value="">选择</option>
+                                            <option value="MonitorT">监控</option>
+                                            <option value="interceptT">拦截</option>
+                                            <option value="sealIpT">封IP</option>
+                                        </select>
+                                    </td>
+                                    <td md-cell>{{dessert.maxProtectAct}}</td>
+                                    <td md-cell>{{dessert.suggestCon}}</td>
+                                </tr>
+                                <tr ng-if="ruleT.desserts.data.length === 0">
+                                    <td colspan="7">
+                                        <div class="empty-tips">
+                                            <i class="iconfont icon-no"></i>
+                                            <label>没有查询到数据！</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </md-table-container>
+
+                        <md-table-pagination
+                                md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                                md-limit="ruleT.query.limit" md-limit-options="ruleT.limitOptions"
+                                md-page="ruleT.query.page"
+                                md-total="{{ruleT.desserts.count}}" md-page-select="ruleT.options.pageSelect"
+                                md-boundary-links="ruleT.options.boundaryLinks"
+                                md-on-paginate="ruleT.logPagination"></md-table-pagination>
+
+
+                        <!-- <md-dialog-actions layout="row">
+                            <span flex></span>
+                            <md-button class="md-primary md-ok" type="submit">
+                                保 存
+                            </md-button>
+                            <md-button class="md-default md-cancel" ng-click="vm.cancel()">
+                                取 消
+                            </md-button>
+                        </md-dialog-actions> -->
+                    </md-card>
+                </form>
+            </md-tab>
+        </md-tabs>
+    </md-content>
+</div>

@@ -1,0 +1,1224 @@
+<div layout="column" ng-cloak ng-init="vm.$onInit()">
+    <md-content layout-padding>
+        <form name="projectForm" style="min-width:680px;" class="form"
+              ng-submit="projectForm.$valid && vm.submit()" novalidate>
+            <md-toolbar class="md-default">
+                <div class="md-toolbar-tools">
+                    <h2>{{vm.title}}</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button md-primary" ng-click="vm.cancel()">
+                        <md-icon aria-label="Close dialog">
+                            <i class="iconfont icon-delete2"></i>
+                        </md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <!-- 攻击类型 -->
+
+            <div layout="row" layout-wrap>
+                <div flex="20" class="label-text">
+                    <label class="required">攻击类型</label>
+                </div>
+                <div>
+                    <md-input-container class="md-block">
+                        <label>选择：</label>
+                        <md-select name="attactType" ng-model="vm.general.attactType" style="min-width: 360px;">
+                            <md-option value="SQL">SQL注入</md-option>
+                            <md-option value="XSS">XSS</md-option>
+                            <md-option value="webshell">webshell</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <!--攻击类型 -->
+
+            <!-- 规则名 -->
+            <div layout="row" layout-wrap>
+                <div flex="20" class="label-text">
+                    <label>规则名</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input md-no-asterisk name="ruleName"
+                               ng-model="vm.general.ruleName"
+                               ng-disabled="formType=='edit'"
+                               aria-label="general"
+                               maxlength="30"
+                        >
+
+                    </md-input-container>
+                </div>
+            </div>
+            <!-- 规则名 -->
+
+            <!-- 规则评分 -->
+            <div layout="row" layout-wrap>
+                <div flex="20" class="label-text">
+                    <label>规则评分</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input md-no-asterisk name="ruleScore"
+                               ng-model="vm.general.ruleScore"
+                               ng-disabled="formType=='edit'"
+                               aria-label="general"
+                               placeholder="100"
+                        >
+
+                    </md-input-container>
+                </div>
+            </div>
+            <!-- 规则评分 -->
+
+            <!-- 规则描述 -->
+            <div layout="row" layout-wrap>
+                <div flex="20" class="label-text">
+                    <label>规则描述</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                            <textarea ng-model="vm.general.description" aria-label="description">
+
+                            </textarea>
+                    </md-input-container>
+                </div>
+            </div>
+            <!-- 规则描述 -->
+
+            <!-- 最高防护动作 -->
+            <div layout="row" layout-wrap>
+                <div flex="20" class="label-text">
+                    <label>最高防护</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block radio">
+                        <md-radio-group ng-model="vm.general.maxPretectAct">
+                            <md-radio-button value="http" class="md-primary">监控</md-radio-button>
+                            <md-radio-button value="https" class="md-primary">拦截</md-radio-button>
+                            <md-radio-button value="ip" class="md-primary">动态IP黑名单</md-radio-button>
+                        </md-radio-group>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <!-- 最高防护动作 -->
+
+            <div layout="row" layout-wrap>
+                <div flex="20" class="label-text">
+                    <label>建设配置</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input ng-model="vm.general.suggestConf"
+                               aria-label="general"
+                        >
+
+                        <div ng-messages="projectForm.suggestConf.$error">
+                            <div ng-message="required">必填</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="20" class="label-text">
+                    <label>修改方案</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <textarea ng-model="vm.general.repairProngram" aria-label="repairProngram"></textarea>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="20" class="label-text">
+                    <label class="required">规则条件</label>
+                </div>
+                <div>
+                    <md-input-container class="md-block">
+                        <label>选择</label>
+                        <md-select name="bsAdjective" ng-model="general.search.ruleInfoType" style="min-width: 360px;">
+                            <md-option ng-repeat="rule in vm.ruleSet"
+                                       ng-bind="rule.name"
+                                       ng-click="vm.changRuleSet($index)"></md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <!-- 单请求规则条件集 -->
+            <div layout="column" ng-if="rule.ruleType!=='Common'" ng-show="vm.count == 0">
+                <div class="label-text">
+                    <h4>单请求规则条件集</h4>
+                </div>
+
+                <div layout="row">
+                    <div flex="20" class="label-text">
+                        <label class="required">条件集配置</label>
+                    </div>
+
+                    <div layout="row" layout-wrap>
+
+                        <md-menu-bar class="leftField" style="padding-top: -10px;">
+                            <md-menu>
+                                <md-button ng-click="$mdOpenMenu()"
+                                           style="background: #1a64bb;color: #fff; margin-top: -10px;">
+                                    选择条件组
+                                </md-button>
+                                <md-menu-content width="3">
+                                    <md-menu-item class="md-indent">
+                                        <md-menu>
+                                            <md-button ng-click="$md-OpenMenu">协议合格条件</md-button>
+                                            <md-menu-content width="3">
+                                                <md-menu-item>
+                                                    <md-button ng-click="vm.chooseCondition('repeat')">重复条件</md-button>
+                                                </md-menu-item>
+                                                <md-menu-item>
+                                                    <md-button ng-click="vm.chooseCondition('existence')">头部缺失条件
+                                                    </md-button>
+                                                </md-menu-item>
+                                                <md-menu-item>
+                                                    <md-button ng-click="vm.chooseCondition('range')">范围条件</md-button>
+                                                </md-menu-item>
+                                            </md-menu-content>
+                                        </md-menu>
+                                    </md-menu-item>
+                                    <md-menu-item class="md-indent">
+                                        <md-menu>
+                                            <md-button ng-click="$md-OpenMenu">普通条件</md-button>
+                                            <md-menu-content width="3">
+                                                <md-menu-item>
+                                                    <md-button ng-click="vm.chooseCondition('regular')">正则条件</md-button>
+                                                </md-menu-item>
+                                                <md-menu-item>
+                                                    <md-button ng-click="vm.chooseCondition('length')">长度条件</md-button>
+                                                </md-menu-item>
+                                                <md-menu-item>
+                                                    <md-button ng-click="vm.chooseCondition('number')">个数条件</md-button>
+                                                </md-menu-item>
+                                            </md-menu-content>
+                                        </md-menu>
+                                    </md-menu-item>
+                                </md-menu-content>
+                            </md-menu>
+                            <md-menu-bar>
+                            </md-menu-bar>
+                        </md-menu-bar>
+                    </div>
+                </div>
+                <!--条件 start-->
+                <div>
+                    <!-- 正则表达 -->
+                    <script type="text/ng-template" id="regular">
+                        <div layout="column" ng-controller="regularCtrl">
+
+                            <md-content ng-init="init(condition)">
+                                <md-card md-theme="default" flex="100" id="hash{{$index}}">
+
+                                    <md-subheader class="md-no-sticky" ng-init="showDetail=true"
+                                                  ng-click="showDetail=!showDetail">
+                                        正则条件
+                                        <i class="fa"
+                                           ng-class="{'fa-caret-right':!showDetail,'fa-caret-down':showDetail}"
+                                           aria-hidden="true"></i>
+                                        <span style="float:right;">
+                                            <button class="md-icon-button md-default-theme md-ink-ripple" type="button"
+                                                    aria-label="delete"
+                                                    ng-click="vm.deleteRuleCondition($index,condition)"
+                                                    aria-hidden="false">
+                                                <i class="fa fa-trash-o ng-scope"></i>
+                                            </button>
+                                        </span>
+                                    </md-subheader>
+                                    <div ng-show="showDetail">
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                <label>检测区域</label>
+                                            </div>
+                                            <div flex="15">
+                                                <md-input-container class="md-block radio">
+                                                    <md-checkbox md-no-ink aria-label="regulUrl"
+                                                                 ng-model="condition.privateSettings.url"
+                                                                 class="md-primary">
+                                                        url
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="15">
+                                                <md-input-container class="md-block radio">
+                                                    <md-checkbox md-no-ink aria-label="regulIp"
+                                                                 ng-model="condition.privateSettings.ip"
+                                                                 class="md-primary">
+                                                        ip
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text">
+                                                <label></label>
+                                            </div>
+                                            <div flex="15">
+                                                <md-input-container class="md-block radio">
+                                                    <md-checkbox md-no-ink aria-label="regulBody"
+                                                                 ng-model="condition.privateSettings.body"
+                                                                 class="md-primary" ng-click="vm.changBody()">
+                                                        body
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20" ng-show="vm.visible">
+                                                <md-input-container class="md-block ">
+                                                    <md-select name="operator"
+                                                               ng-model="condition.privateSettings.operator">
+                                                        <md-option value="parameterName" ng-click="vm.changParameter()">
+                                                            post参数名
+                                                        </md-option>
+                                                        <md-option value="parameterValue"
+                                                                   ng-click="vm.parameterValue()">post参数值
+                                                        </md-option>
+                                                        <md-option value="UploadFileName"
+                                                                   ng-click="vm.changParameter()">上传文件名
+                                                        </md-option>
+                                                        <md-option value="UploadFileContent"
+                                                                   ng-click="vm.changParameter()">上传文件内容
+                                                        </md-option>
+                                                        <md-option value="bodyContent" ng-click="vm.changParameter()">
+                                                            所有body区域
+                                                        </md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+
+                                            <div flex="35" style="margin-left: 5px;" ng-show="vm.parameter">
+                                                <md-input-container class="md-block">
+                                                    <input name="regexpPostVal" aria-label="regexpPostVal"
+                                                           ng-model="condition.privateSettings.regexpPostVal"
+                                                           placeholder="不填默认检测所有post参数值">
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text">
+                                                <label></label>
+                                            </div>
+                                            <div flex="15">
+                                                <md-input-container class="md-block" style="margin-top: 5px;">
+                                                    <md-checkbox md-no-ink aria-label="Value"
+                                                                 ng-model="condition.privateSettings.Value"
+                                                                 class="md-primary" ng-click="vm.changparVal()">
+                                                        参数
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+
+                                            <div flex="20" ng-show="vm.involved">
+                                                <md-input-container class="md-block">
+                                                    <md-select name="parameter"
+                                                               ng-model="condition.privateSettings.Varea">
+                                                        <md-option value="allParameterArea" ng-click="vm.parName()">
+                                                            所有参数区域
+                                                        </md-option>
+                                                        <md-option value="parName" ng-click="vm.parName()">参数名
+                                                        </md-option>
+                                                        <md-option value="parVal" ng-click="vm.parVal()">参数值</md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                                <!--<condition></condition>-->
+                                            </div>
+                                            <div flex="35" style="margin-left: 5px;" ng-show="vm.GETparVal">
+                                                <md-input-container class="md-block">
+                                                    <input name="GET" aria-label="GET"
+                                                           ng-model="condition.privateSettings.GETVal"
+                                                           placeholder="不填默认检测所有GET参数值">
+                                                </md-input-container>
+                                            </div>
+
+                                        </div>
+
+                                        <div>
+                                            <div layout="row" layout-wrap>
+                                                <div flex="20" class="label-text">
+                                                    <label></label>
+                                                </div>
+                                                <div flex="15">
+                                                    <md-input-container class="md-block" style="margin-top: 5px;">
+                                                        <md-checkbox md-no-ink aria-label="top"
+                                                                     ng-model="condition.privateSettings.top"
+                                                                     class="md-primary" ng-click="vm.changTop()">
+                                                            头部
+                                                        </md-checkbox>
+                                                    </md-input-container>
+                                                </div>
+                                                <div flex="20" ng-show="vm.top">
+                                                    <md-input-container class="md-block">
+                                                        <md-select name="parameter"
+                                                                   ng-model="condition.privateSettings.topArea">
+                                                            <md-option value="topArea" ng-click="vm.topName()">所有头部区域
+                                                            </md-option>
+                                                            <md-option value="topName" ng-click="vm.topName()">头部名
+                                                            </md-option>
+                                                            <md-option value="topVal" ng-click="vm.changTopVal()">头部值
+                                                            </md-option>
+                                                        </md-select>
+                                                    </md-input-container>
+                                                </div>
+
+                                            </div>
+
+                                            <div layout="row" layout-wrap ng-show="vm.topValue">
+                                                <div flex="20" class="label-text">
+                                                    <label></label>
+                                                </div>
+                                                <div flex="15"></div>
+                                                <div flex="10">
+                                                    <md-input-container class="md-block"
+                                                                        style="margin-top: 5px;">
+                                                        <md-checkbox md-no-ink aria-label="cookie"
+                                                                     ng-model="condition.privateSettings.cookie"
+                                                                     class="md-primary" ng-click="vm.changCookie()">
+                                                            cookie
+                                                        </md-checkbox>
+                                                    </md-input-container>
+                                                </div>
+
+                                                <div flex="15" style="margin-left: 5px;"
+                                                     ng-show="condition.privateSettings.cookieArea">
+                                                    <md-input-container class="md-block">
+                                                        <md-select name="parameter" ng-model="vm.condition.parameter">
+                                                            <md-option value="cookieArea" ng-click="vm.cookieName()">
+                                                                所有cookie区域
+                                                            </md-option>
+                                                            <md-option value="cookieName" ng-click="vm.cookieName()">
+                                                                cookie名
+                                                            </md-option>
+                                                            <md-option value="cookieVal" ng-click="vm.cookieVal()">
+                                                                cookie值
+                                                            </md-option>
+                                                        </md-select>
+                                                    </md-input-container>
+                                                </div>
+
+                                                <div flex="25" style="margin-left: 5px;" ng-show="vm.topCookieVal">
+                                                    <md-input-container class="md-block">
+                                                        <input name="cookie" aria-label="cookie" style="width: 148px;"
+                                                               ng-model="condition.privateSettings.cookieVal"
+                                                               placeholder="不填默认检测所有cookie值">
+                                                    </md-input-container>
+                                                </div>
+                                            </div>
+
+                                            <div layout="row" layout-wrap ng-show="vm.topValue">
+                                                <div flex="20" class="label-text">
+                                                    <label></label>
+                                                </div>
+                                                <div flex="15"></div>
+                                                <div flex="10">
+                                                    <md-input-container class="md-block"
+                                                                        style="margin-top: 5px;">
+                                                        <md-checkbox md-no-ink aria-label="other"
+                                                                     ng-model="condition.privateSettings.other"
+                                                                     class="md-primary">
+                                                            其他
+                                                        </md-checkbox>
+                                                    </md-input-container>
+                                                </div>
+
+                                                <div flex="" style="margin-left: 5px;">
+                                                    <md-input-container class="md-block">
+                                                        <input name="otherPut" aria-label="otherPut"
+                                                               style="width: 252px;"
+                                                               ng-model="condition.privateSettings.otherPut">
+                                                    </md-input-container>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text">
+                                                <label>正则表达式</label>
+                                            </div>
+                                            <div flex="80">
+                                                <md-input-container class="md-block radio">
+                                                <textarea ng-model="condition.privateSettings.regexp"
+                                                          aria-label="regexp">
+
+                                                </textarea>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </md-card>
+                            </md-content>
+                        </div>
+                    </script>
+                    <!-- 正则表达 -->
+
+                    <!-- 长度条件 -->
+                    <script type="text/ng-template" id="length">
+                        <div layout="column">
+                            <md-content>
+                                <md-card md-theme="default" flex="100" id="hash{{$index}}">
+                                    <md-subheader class="md-no-sticky" ng-init="showDetail=true"
+                                                  ng-click="showDetail=!showDetail">
+                                        长度条件
+                                        <i class="fa"
+                                           ng-class="{'fa-caret-right':!showDetail,'fa-caret-down':showDetail}"
+                                           aria-hidden="true"></i>
+                                        <span style="float:right;">
+                                            <button class="md-icon-button md-default-theme md-ink-ripple" type="button"
+                                                    aria-label="delete"
+                                                    ng-click="vm.deleteRuleCondition($index,condition)"
+                                                    aria-hidden="false">
+                                                <i class="fa fa-trash-o ng-scope"></i>
+                                            </button>
+                                        </span>
+                                    </md-subheader>
+                                    <div ng-show="showDetail">
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text">
+                                                <label class="required">检测区域</label>
+                                            </div>
+                                            <div flex="55">
+                                                <md-input-container class="md-block">
+                                                    <label>选择：</label>
+                                                    <md-select name="bsAdjective" ng-model="user.search.bsAdjective">
+                                                        <md-option value="URL">URL</md-option>
+                                                        <md-option value="parameter">参数</md-option>
+                                                        <md-option value="body">body</md-option>
+                                                        <md-option value="head">头部</md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text">
+                                                <label class="required">关于</label>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <label>选择：</label>
+                                                    <md-select name="bsAdjective" ng-model="user.search.bsAdjective">
+                                                        <md-option value="small">小于</md-option>
+                                                        <md-option value="equal">等于</md-option>
+                                                        <md-option value="large">大于</md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="15" class="label-text">
+                                                <label class="required">值</label>
+                                            </div>
+
+                                            <div flex="25">
+                                                <md-input-container class="md-block">
+                                                    <input required name="name" aria-label="name"
+                                                           ng-model="vm.domain.name">
+                                                </md-input-container>
+                                            </div>
+
+                                        </div>
+
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text">
+                                                <label>Negative</label>
+                                            </div>
+                                            <div flex="66">
+                                                <md-input-container class="md-block">
+                                                    <md-switch ng-model="vm.domain.waf" aria-label="waf"
+                                                               ng-true-value="'enabled'" ng-false-value="'disabled'"
+                                                               class="md-warn">
+                                                        {{ vm.domain.waf=='enabled' ? '开启':'关闭' }}
+                                                    </md-switch>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </md-card>
+                            </md-content>
+                        </div>
+
+                    </script>
+                    <!-- 长度条件 -->
+
+                    <!-- 个数条件 -->
+                    <script type="text/ng-template" id="number">
+                        <div layout="column">
+                            <md-content>
+                                <md-card md-theme="default" flex="100">
+                                    <md-subheader class="md-no-sticky" ng-init="showDetail=true"
+                                                  ng-click="showDetail=!showDetail">
+                                        个数条件
+                                        <i class="fa"
+                                           ng-class="{'fa-caret-right':!showDetail,'fa-caret-down':showDetail}"
+                                           aria-hidden="true"></i>
+                                        <span style="float:right;">
+                                            <button class="md-icon-button md-default-theme md-ink-ripple" type="button"
+                                                    aria-label="delete"
+                                                    ng-click="vm.deleteRuleCondition($index,condition)"
+                                                    aria-hidden="false">
+                                                <i class="fa fa-trash-o ng-scope"></i>
+                                            </button>
+                                        </span>
+                                    </md-subheader>
+                                    <div ng-show="showDetail">
+                                        <!-- 头部 -->
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                <label>检测区域</label>
+                                            </div>
+                                            <div flex="15">
+                                                <md-input-container class="md-block radio">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.numberTop"
+                                                                 class="md-primary">
+                                                        头部
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20" class="label-text">
+                                                <label>最大个数</label>
+                                            </div>
+                                            <div flex="35">
+                                                <md-input-container class="md-block">
+                                                    <input name="numberTopMaximum" aria-label="numberTopMaximum"
+                                                           ng-model="vm.condition.numberTopMaximum">
+                                                </md-input-container>
+                                            </div>
+
+                                        </div>
+                                        <!-- 头部 -->
+
+                                        <!-- GET参数 -->
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                <label></label>
+                                            </div>
+                                            <div flex="15">
+                                                <md-input-container class="md-block radio">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.numberGET"
+                                                                 class="md-primary">
+                                                        GET参数
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20" class="label-text">
+                                                <label>最大个数</label>
+                                            </div>
+                                            <div flex="35">
+                                                <md-input-container class="md-block">
+                                                    <input name="numberGETMaximum" aria-label="numberGETMaximum"
+                                                           ng-model="vm.condition.numberGETMaximum">
+                                                </md-input-container>
+                                            </div>
+
+                                        </div>
+                                        <!-- GET参数 -->
+
+                                        <!-- POST的参数 -->
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                <label></label>
+                                            </div>
+                                            <div flex="15">
+                                                <md-input-container class="md-block radio">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.numberPost"
+                                                                 class="md-primary">
+                                                        POST的参数
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20" class="label-text">
+                                                <label>最大个数</label>
+                                            </div>
+                                            <div flex="35">
+                                                <md-input-container class="md-block">
+                                                    <input name="numberPostMaximum" aria-label="numberPostMaximum"
+                                                           ng-model="vm.condition.numberPostMaximum">
+                                                </md-input-container>
+                                            </div>
+
+                                        </div>
+                                        <!-- POST的参数 -->
+
+                                        <!-- COOKIE参数 -->
+                                        <div layout="row" layout-wrap style="padding-bottom: 10px;">
+                                            <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                <label></label>
+                                            </div>
+                                            <div flex="15">
+                                                <md-input-container class="md-block radio">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.numberCookie"
+                                                                 class="md-primary">
+                                                        POST的参数
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20" class="label-text">
+                                                <label>最大个数</label>
+                                            </div>
+                                            <div flex="35">
+                                                <md-input-container class="md-block">
+                                                    <input name="numberCookieMaximum" aria-label="numberCookieMaximum"
+                                                           ng-model="vm.condition.numberCookieMaximum">
+                                                </md-input-container>
+                                            </div>
+
+                                        </div>
+                                        <!-- COOKIE参数 -->
+                                    </div>
+
+                                </md-card>
+                            </md-content>
+                        </div>
+
+                    </script>
+                    <!-- 个数条件 -->
+
+                    <!-- 重复条件 -->
+                    <script type="text/ng-template" id="repeat">
+                        <div layout="column">
+                            <md-content>
+                                <md-card md-theme="default" flex="100">
+                                    <md-subheader class="md-no-sticky" ng-init="showDetail=true"
+                                                  ng-click="showDetail=!showDetail">
+                                        重复条件
+                                        <i class="fa"
+                                           ng-class="{'fa-caret-right':!showDetail,'fa-caret-down':showDetail}"
+                                           aria-hidden="true"></i>
+                                        <span style="float:right;">
+                                            <button class="md-icon-button md-default-theme md-ink-ripple" type="button"
+                                                    aria-label="delete"
+                                                    ng-click="vm.deleteRuleCondition($index,condition)"
+                                                    aria-hidden="false">
+                                                <i class="fa fa-trash-o ng-scope"></i>
+                                            </button>
+                                        </span>
+                                    </md-subheader>
+                                    <div ng-show="showDetail">
+                                        <div layout="row" layout-wrap style="padding-bottom: 10px;">
+                                            <div flex="20" class="label-text" style="margin-top: -9px;">
+                                                <label>检测区域</label>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.HeadRepeat"
+                                                                 class="md-primary">
+                                                        头部名重复
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.GETRepeat"
+                                                                 class="md-primary">
+                                                        GET参数名重复
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.PostRepeat"
+                                                                 class="md-primary">
+                                                        POST参数名重复
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.CookieRepeat"
+                                                                 class="md-primary">
+                                                        Cookie名重复
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </md-card>
+                            </md-content>
+                        </div>
+                    </script>
+                    <!-- 重复条件 -->
+
+                    <!-- 存在条件 -->
+                    <script type="text/ng-template" id="existence">
+                        <div layout="column">
+                            <md-content>
+                                <md-card md-theme="default" flex="100">
+                                    <md-subheader class="md-no-sticky" ng-init="showDetail=true"
+                                                  ng-click="showDetail=!showDetail">
+                                        头部缺失条件
+                                        <i class="fa"
+                                           ng-class="{'fa-caret-right':!showDetail,'fa-caret-down':showDetail}"
+                                           aria-hidden="true"></i>
+                                        <span style="float:right;">
+                                            <button class="md-icon-button md-default-theme md-ink-ripple" type="button"
+                                                    aria-label="delete"
+                                                    ng-click="vm.deleteRuleCondition($index,condition)"
+                                                    aria-hidden="false">
+                                                <i class="fa fa-trash-o ng-scope"></i>
+                                            </button>
+                                        </span>
+                                    </md-subheader>
+                                    <div ng-show="showDetail">
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                <label>检测区域</label>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.DefectCookie"
+                                                                 class="md-primary">
+                                                        Cookie
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.DefectUser"
+                                                                 class="md-primary">
+                                                        User-Agent
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.DefectForward"
+                                                                 class="md-primary">
+                                                        X-Forward-For
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.DefectContent"
+                                                                 class="md-primary">
+                                                        Content-Type
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                <label></label>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.DefectHost"
+                                                                 class="md-primary">
+                                                        Host
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.DefectReferer"
+                                                                 class="md-primary">
+                                                        Referer
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.DefectAccept"
+                                                                 class="md-primary">
+                                                        Accept
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.DefectLanguage"
+                                                                 class="md-primary">
+                                                        Accept-Language
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+
+                                        <div layout="row" layout-wrap style="padding-bottom: 10px;">
+                                            <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                <label></label>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="vm.condition.DefectEnconding"
+                                                                 class="md-primary">
+                                                        Accent-Enconding
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="10">
+                                                <md-input-container class="md-block">
+                                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                 ng-model="data.cb5"
+                                                                 class="md-primary">
+                                                        其他
+                                                    </md-checkbox>
+                                                </md-input-container>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <input required name="name" aria-label="name"
+                                                           ng-model="vm.domain.name">
+                                                </md-input-container>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </md-card>
+                            </md-content>
+                        </div>
+                    </script>
+                    <!-- 存在条件 -->
+
+                    <!-- 范围条件 -->
+                    <script type="text/ng-template" id="range">
+                        <div layout="column">
+                            <md-content>
+                                <md-card md-theme="default" flex="100">
+                                    <md-subheader class="md-no-sticky" ng-init="showDetail=true"
+                                                  ng-click="showDetail=!showDetail">
+                                        范围条件
+                                        <i class="fa"
+                                           ng-class="{'fa-caret-right':!showDetail,'fa-caret-down':showDetail}"
+                                           aria-hidden="true"></i>
+                                        <span style="float:right;">
+                                            <button class="md-icon-button md-default-theme md-ink-ripple" type="button"
+                                                    aria-label="delete"
+                                                    ng-click="vm.deleteRuleCondition($index,condition)"
+                                                    aria-hidden="false">
+                                                <i class="fa fa-trash-o ng-scope"></i>
+                                            </button>
+                                        </span>
+                                    </md-subheader>
+                                    <div ng-show="showDetail">
+                                        <div layout="row" layout-wrap>
+                                            <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                <label>检测区域</label>
+                                            </div>
+                                            <div flex="20">
+                                                <md-input-container class="md-block">
+                                                    <label>选择：</label>
+                                                    <md-select name="bsAdjective" ng-model="vm.condition.Range">
+
+                                                        <md-option ng-repeat="info in vm.testing"
+                                                                   ng-bind="info.name"
+                                                                   ng-click="vm.changMethodRequest($index)"></md-option>
+                                                        <!--<md-option value="Method" ng-click="vm.changMethodRequest($index)">
+                                                            请求方法
+                                                        </md-option>
+                                                        <md-option value="version" ng-click="vm.changMethodRequest($index)">
+                                                            协议版本号
+                                                        </md-option>-->
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+
+                                        <div ng-show="vm.now==0">
+                                            <div layout="row" layout-wrap style="padding-bottom: 10px;">
+                                                <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                    <label></label>
+                                                </div>
+                                                <div flex="20"></div>
+                                                <div flex="15" class="label-text">
+                                                    <md-input-container class="md-block radio">
+                                                        <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                     ng-model="vm.condition.RangeGet"
+                                                                     class="md-primary">
+                                                            GET
+                                                        </md-checkbox>
+                                                    </md-input-container>
+                                                </div>
+                                                <div flex="15" class="label-text">
+                                                    <md-input-container class="md-block radio">
+                                                        <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                     ng-model="vm.condition.RangePost"
+                                                                     class="md-primary">
+                                                            POST
+                                                        </md-checkbox>
+                                                    </md-input-container>
+                                                </div>
+                                                <div flex="15" class="label-text">
+                                                    <md-input-container class="md-block radio">
+                                                        <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                     ng-model="vm.condition.RangeHead"
+                                                                     class="md-primary">
+                                                            HEAD
+                                                        </md-checkbox>
+                                                    </md-input-container>
+                                                </div>
+                                            </div>
+
+                                            <div layout="row" layout-wrap style="padding-bottom: 10px;">
+                                                <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                    <label></label>
+                                                </div>
+                                                <div flex="20"></div>
+                                                <div flex="15" class="label-text">
+                                                    <md-input-container class="md-block radio">
+                                                        <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                     ng-model="vm.condition.RangeOptiops"
+                                                                     class="md-primary">
+                                                            OPTIONS
+                                                        </md-checkbox>
+                                                    </md-input-container>
+                                                </div>
+                                                <div flex="15" class="label-text">
+                                                    <md-input-container class="md-block radio">
+                                                        <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                     ng-model="vm.condition.RangePut"
+                                                                     class="md-primary">
+                                                            PUT
+                                                        </md-checkbox>
+                                                    </md-input-container>
+                                                </div>
+                                                <div flex="15" class="label-text">
+                                                    <md-input-container class="md-block radio">
+                                                        <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                     ng-model="vm.condition.RangeDelete"
+                                                                     class="md-primary">
+                                                            DELETE
+                                                        </md-checkbox>
+                                                    </md-input-container>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div ng-show="vm.now==1">
+                                            <div layout="row" layout-wrap>
+                                                <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                    <label></label>
+                                                </div>
+                                                <div flex="20"></div>
+                                                <div flex="15" class="label-text">
+                                                    <md-input-container class="md-block radio">
+                                                        <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                     ng-model="vm.condition.RangeOne"
+                                                                     class="md-primary">
+                                                            1.0
+                                                        </md-checkbox>
+                                                    </md-input-container>
+                                                </div>
+                                            </div>
+
+                                            <div layout="row" layout-wrap>
+                                                <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                    <label></label>
+                                                </div>
+                                                <div flex="20"></div>
+                                                <div flex="15" class="label-text">
+                                                    <md-input-container class="md-block radio">
+                                                        <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                     ng-model="vm.condition.RangeOnePointOne"
+                                                                     class="md-primary">
+                                                            1.1
+                                                        </md-checkbox>
+                                                    </md-input-container>
+                                                </div>
+                                            </div>
+
+                                            <div layout="row" layout-wrap style="padding-bottom: 10px;">
+                                                <div flex="20" class="label-text" style="margin-top: -3px;">
+                                                    <label></label>
+                                                </div>
+                                                <div flex="20"></div>
+                                                <div flex="15" class="label-text">
+                                                    <md-input-container class="md-block radio">
+                                                        <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                                     ng-model="vm.condition.Rangeto"
+                                                                     class="md-primary">
+                                                            其他
+                                                        </md-checkbox>
+                                                    </md-input-container>
+                                                </div>
+                                                <div flex="30" class="label-text">
+                                                    <md-input-container class="md-block">
+                                                        <input name="to" aria-label="to"
+                                                               ng-model="vm.condition.to">
+                                                    </md-input-container>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </md-card>
+                            </md-content>
+                        </div>
+                    </script>
+                    <!-- 范围条件 -->
+                </div>
+
+                <div class="conditions">
+                    <div ng-repeat="condition in vm.rule.ruleConditions track by $index">
+                        <ng-include src="vm.conditionsMapUrl[condition.type]()"></ng-include>
+                    </div>
+                </div>
+                <!--条件 end-->
+            </div>
+
+
+            <!-- 多请求规则条件集 -->
+            <div layout="column" ng-show="vm.count == 1">
+                <div class="label-text">
+                    <h4>多请求规则条件集</h4>
+                </div>
+                <script type="text/ng-template" id="Multiple">
+                    <div layout="column">
+                        <md-content>
+                            <md-card md-theme="default" flex="100">
+                                <md-subheader class="md-no-sticky" ng-init="showDetail=true"
+                                              ng-click="showDetail=!showDetail">
+                                    多请求规则条件集
+                                    <i class="fa"
+                                       ng-class="{'fa-caret-right':!showDetail,'fa-caret-down':showDetail}"
+                                       aria-hidden="true"></i>
+                                </md-subheader>
+                                <div ng-show="showDetail">
+                                    <div layout="row" layout-wrap>
+                                        <div flex="25" class="label-text">
+                                            <label>匹配URL正则</label>
+                                        </div>
+                                        <div flex="70">
+                                            <md-input-container class="md-block radio">
+                                                <textarea ng-model="vm.URLregular" aria-label="ip">
+
+                                                </textarea>
+                                            </md-input-container>
+                                        </div>
+                                    </div>
+
+                                    <div layout="row" layout-wrap>
+                                        <div flex="25" class="label-text" style="margin-top: -5px;">
+                                            <label>聚集字段</label>
+                                        </div>
+                                        <div flex="5">
+                                            <md-input-container class="md-block"
+                                                                style="margin-top: 5px;">
+                                                <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                             ng-model="vm.condition.ipRegular"
+                                                             class="md-primary">
+                                                    ip
+                                                </md-checkbox>
+                                            </md-input-container>
+                                        </div>
+
+                                        <div flex="15">
+                                            <md-input-container class="md-block"
+                                                                style="margin-top: 5px; margin-left: 5px;">
+                                                <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                             ng-model="vm.condition.AgentRegular"
+                                                             class="md-primary">
+                                                    User-Agent
+                                                </md-checkbox>
+                                            </md-input-container>
+                                        </div>
+
+                                        <div flex="5">
+                                            <md-input-container class="md-block"
+                                                                style="margin-top: 5px;">
+                                                <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                             ng-model="vm.condition.userUrlRegular"
+                                                             class="md-primary">
+                                                    Url
+                                                </md-checkbox>
+                                            </md-input-container>
+                                        </div>
+
+                                        <div flex="15">
+                                            <md-input-container class="md-block"
+                                                                style="margin-top: 5px; margin-left: 10px;">
+                                                <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                             ng-model="vm.condition.usertoTop"
+                                                             class="md-primary">
+                                                    其他头部
+                                                </md-checkbox>
+                                            </md-input-container>
+                                        </div>
+
+                                        <div flex="20">
+                                            <md-input-container class="md-block"
+                                                                style="margin-top: 5px; margin-left: 10px;">
+                                                <md-input-container class="md-block">
+                                                    <input name="userTop" aria-label="userTop"
+                                                           ng-model="vm.condition.userTop">
+                                                </md-input-container>
+                                            </md-input-container>
+                                        </div>
+
+                                    </div>
+
+                                    <div layout="row" layout-wrap>
+                                        <div flex="25" class="label-text">
+                                            <label>计数周期</label>
+                                        </div>
+                                        <div flex="25">
+                                            <md-input-container class="md-block"
+                                                                style="margin-top: 5px;">
+                                                <input required name="second" aria-label="second"
+                                                       ng-model="vm.condition.second">秒
+                                                <span ng-messages="projectForm.name.$error">
+                                                <span>(若为空，则不限制计数时间)</span>
+                                            </span>
+                                            </md-input-container>
+                                        </div>
+                                    </div>
+
+                                    <div layout="row" layout-wrap style="padding-bottom: 10px;">
+                                        <div flex="25" class="label-text">
+                                            <label>请求次数阈值</label>
+                                        </div>
+                                        <div flex="25">
+                                            <md-input-container class="md-block"
+                                                                style="margin-top: 5px;">
+                                                <input required name="threshold" aria-label="threshold"
+                                                       ng-model="vm.condition.threshold">
+                                            </md-input-container>
+                                        </div>
+                                    </div>
+                                </div>
+                            </md-card>
+                        </md-content>
+                    </div>
+
+                </script>
+
+                <div ng-include="'Multiple'"></div>
+            </div>
+            <!-- 多请求规则条件集 -->
+
+            <md-dialog-actions layout="row">
+                <span flex></span>
+                <md-button class="md-primary md-ok" type="submit">
+                    保 存
+                </md-button>
+                <md-button class="md-default md-cancel" ng-click="vm.cancel()">
+                    取 消
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-content>
+</div>

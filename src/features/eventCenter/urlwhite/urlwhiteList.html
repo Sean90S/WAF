@@ -1,0 +1,113 @@
+<style>
+    md-checkbox.md-checked .md-icon{
+        background-color: #004994;
+    }
+</style>
+<md-content layout="column" flex>
+    <md-card class="search-section">
+        <form>
+            <div layout="row">
+                <md-input-container flex="none">
+                    <label>选择域名</label>
+                    <input name="clientName" ng-model="urlwhite.search.name">
+                </md-input-container>
+                
+                <md-input-container flex="none" class="search-container">
+                    <a class="md-primary btn-operator btn-lg" ng-click="urlwhite.searchData()">
+                        <!--  <i class="iconfont icon-search"></i> -->
+                        切换
+                    </a>
+                </md-input-container>
+
+            </div>
+        </form>
+    </md-card>
+
+     <md-card class="table-section">
+        <md-toolbar class="md-table-toolbar md-default"
+                    ng-hide="urlwhite.options.rowSelection && urlwhite.selected.length">
+            <div class="md-toolbar-tools">
+                <span>URL白名单管理</span>
+                <a class="md-primary btn-operator"
+                   ng-click="urlwhite.showDialog($event)">
+                    新 增
+                </a>
+                <div flex></div>
+                <md-button class="md-icon-button" ng-click="urlwhite.refresh()">
+                    <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                    <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-toolbar class="md-table-toolbar alternate"
+                    ng-show="urlwhite.options.rowSelection && urlwhite.selected.length">
+            <div class="md-toolbar-tools">
+                <span>选择了{{urlwhite.selected.length}}条记录</span>
+                <div flex></div>
+                <span class="batch-operator">
+                    <label>批量操作</label>
+                <md-input-container flex="none">
+                    <md-select ng-model="urlwhite.batch_operator" ng-change="urlwhite.batch_handle()"
+                               style="min-width: 96px" placeholder="请选择">
+                        <md-option value="delete">删除选中</md-option>
+                    </md-select>
+                </md-input-container>
+                </span>
+            </div>
+        </md-toolbar>
+
+        <md-table-container>
+            <table md-table
+                   md-row-select="urlwhite.options.rowSelection"
+                   multiple="{{urlwhite.options.multiSelect}}"
+                   ng-model="urlwhite.selected"
+                   md-progress="urlwhite.promise">
+                <thead ng-if="!urlwhite.options.decapitate" md-head md-on-reorder="logOrder">
+                <tr md-row>
+                    <th md-column><span>ID</span></th>
+                    <th md-column><span>类型</span></th>
+                    <th md-column><span>值</span></th>
+                    <th md-column><span>描述 WAF</span></th>
+                    <th md-column><span>操作</span></th>
+                </tr>
+                </thead>
+                <tbody md-body>
+                <tr md-row
+                    md-select="dessert"
+                    md-on-select="logItem"
+                    ng-repeat="dessert in urlwhite.desserts.data | limitTo: urlwhite.query.limit : (urlwhite.query.page -1) * urlwhite.query.limit">
+                    <td md-cell>{{dessert.id}}</td>
+                    <td md-cell>{{dessert.mimeType}}</td>
+                    <td md-cell>{{dessert.value}}</td>
+                    <td md-cell>{{dessert.sentence}}</td>
+                    <td md-cell class="md-table-operator">
+                        <md-button class="md-icon-button" aria-label="delete"
+                                   ng-click="urlwhite.deleteRecord($event,dessert.id)">
+                            <i class="iconfont icon-remove" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+                <tr ng-if="urlwhite.desserts.data.length === 0">
+                    <td colspan="7">
+                        <div class="empty-tips">
+                            <i class="iconfont icon-no"></i>
+                            <label>没有查询到数据！</label>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+
+        <md-table-pagination
+                md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                md-limit="urlwhite.query.limit" md-limit-options="urlwhite.limitOptions"
+                md-page="urlwhite.query.page"
+                md-total="{{urlwhite.desserts.count}}" md-page-select="urlwhite.options.pageSelect"
+                md-boundary-links="urlwhite.options.boundaryLinks"
+                md-on-paginate="urlwhite.logPagination"></md-table-pagination>
+    </md-card>
+</md-content>
+

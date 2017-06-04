@@ -1,0 +1,168 @@
+<style>
+    md-checkbox.md-checked .md-icon{
+        background-color: #004994;
+    }
+</style>
+<div ng-clock>
+    <md-content layout="column" flex>
+        <md-tabs md-dynamic-height md-border-bottom>
+        <!-- 平台授权码管理 -->
+            <md-tab label="平台授权码管理">
+                <md-card class="table-section">
+                    <md-toolbar class="md-table-toolbar md-default"
+                                ng-hide="scenario.options.rowSelection && scenario.selected.length">
+                        <div class="md-toolbar-tools">
+                            <span>平台授权码管理</span>
+                            <a class="md-primary btn-operator"
+                               ng-click="scenario.showDialog($event)">
+                                新 增
+                            </a>
+                            <div flex></div>
+                            <md-button class="md-icon-button" ng-click="scenario.refresh()">
+                                <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                                <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                            </md-button>
+                        </div>
+                    </md-toolbar>
+
+                    <md-table-container>
+                        <table md-table
+                               md-row-select="scenario.options.rowSelection"
+                               multiple="{{scenario.options.multiSelect}}"
+                               ng-model="scenario.selected"
+                               md-progress="scenario.promise">
+                            <thead ng-if="!scenario.options.decapitate" md-head md-on-reorder="logOrder">
+                            <tr md-row>
+                                <th md-column><span>ID</span></th>
+                                <th md-column><span>平台名</span></th>
+                                <th md-column><span>授权码</span></th> 
+                                 <th md-column><span>授权接口分类</span></th>
+                                <th md-column><span>操作</span></th>
+                            </tr>
+                            </thead>
+                            <tbody md-body>
+                            <tr md-row
+                                md-select="dessert"
+                                md-on-select="logItem"
+                                ng-repeat="dessert in scenario.desserts.data | limitTo: scenario.query.limit : (scenario.query.page -1) * scenario.query.limit">
+                                <td md-cell>{{dessert.id}}</td>
+                                <td md-cell>{{dessert.lastName}}</td>
+                                <td md-cell>{{dessert.password}}</td>
+                                <td md-cell>{{dessert.interface}}</td>
+                                <td md-cell class="md-table-operator">
+                                    <md-button class="md-icon-button" aria-label="edit" ng-click="scenario.showDialog($event,dessert)">
+                                        <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                        <md-tooltip md-direction="bottom">修改</md-tooltip>
+                                    </md-button>
+                                    <md-button class="md-icon-button" aria-label="delet"
+                                               ng-click="scenario.deleteRecord($event,dessert.id)">
+                                        <i class="iconfont icon-remove" aria-hidden="true"></i>
+                                        <md-tooltip md-direction="bottom">删除</md-tooltip>
+                                    </md-button>
+                                </td>
+                            </tr>
+                            <tr ng-if="scenario.desserts.data.length === 0">
+                                <td colspan="7">
+                                    <div class="empty-tips">
+                                        <i class="iconfont icon-no"></i>
+                                        <label>没有查询到数据！</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </md-table-container>
+
+                    <md-table-pagination
+                            md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                            md-limit="scenario.query.limit" md-limit-options="scenario.limitOptions"
+                            md-page="scenario.query.page"
+                            md-total="{{scenario.desserts.count}}" md-page-select="scenario.options.pageSelect"
+                            md-boundary-links="scenario.options.boundaryLinks"
+                            md-on-paginate="scenario.logPagination"></md-table-pagination>
+                </md-card>
+            </md-tab>
+        <!-- 平台授权码管理 -->
+
+        <!-- API接口管理 -->
+            
+            <md-tab label="API接口管理">
+                <md-card class="table-section">
+                    <md-toolbar class="md-table-toolbar md-default"
+                                ng-hide="scenario.options.rowSelection && scenario.selected.length">
+                        <div class="md-toolbar-tools">
+                            <span>API接口管理</span>
+                            <a class="md-primary btn-operator"
+                               ng-click="scenario.showDia($event)">
+                                新 增
+                            </a>
+                            <div flex></div>
+                            <md-button class="md-icon-button" ng-click="scenario.refresh()">
+                                <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                                <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                            </md-button>
+                        </div>
+                    </md-toolbar>
+
+                    <md-table-container>
+                        <table md-table
+                               md-row-select="scenario.options.rowSelection"
+                               multiple="{{scenario.options.multiSelect}}"
+                               ng-model="scenario.selected"
+                               md-progress="scenario.promise">
+                            <thead ng-if="!scenario.options.decapitate" md-head md-on-reorder="logOrder">
+                            <tr md-row>
+                                <th md-column><span>ID</span></th>
+                                <th md-column><span>API接口分类</span></th>
+                                <th md-column><span>授权平台</span></th> 
+                                <th md-column><span>操作</span></th>
+                            </tr>
+                            </thead>
+                            <tbody md-body>
+                            <tr md-row
+                                md-select="dessert"
+                                md-on-select="logItem"
+                                ng-repeat="dessert in scenario.desserts.data | limitTo: scenario.query.limit : (scenario.query.page -1) * scenario.query.limit">
+                                <td md-cell>{{dessert.id}}</td>
+                                <td md-cell>{{dessert.apiclassification}}</td>
+                                <td md-cell>{{dessert.Authorization}}</td> 
+                                <td md-cell class="md-table-operator">
+                                    <md-button class="md-icon-button" aria-label="edit"  ng-click="scenario.showDia($event,dessert)">
+                                        <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                        <md-tooltip md-direction="bottom">修改</md-tooltip>
+                                    </md-button>
+                                    <md-button class="md-icon-button" aria-label="delet"
+                                               ng-click="scenario.deleteRecord($event,dessert.id)">
+                                        <i class="iconfont icon-remove" aria-hidden="true"></i>
+                                        <md-tooltip md-direction="bottom">删除</md-tooltip>
+                                    </md-button>
+                                </td>
+                            </tr>
+                            <tr ng-if="scenario.desserts.data.length === 0">
+                                <td colspan="7">
+                                    <div class="empty-tips">
+                                        <i class="iconfont icon-no"></i>
+                                        <label>没有查询到数据！</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </md-table-container>
+
+                    <md-table-pagination
+                            md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                            md-limit="scenario.query.limit" md-limit-options="scenario.limitOptions"
+                            md-page="scenario.query.page"
+                            md-total="{{scenario.desserts.count}}" md-page-select="scenario.options.pageSelect"
+                            md-boundary-links="scenario.options.boundaryLinks"
+                            md-on-paginate="scenario.logPagination"></md-table-pagination>
+                </md-card>
+            </md-tab>
+
+        <!-- API接口管理 -->
+        </md-tabs>
+    </md-content>
+</div>
+
+

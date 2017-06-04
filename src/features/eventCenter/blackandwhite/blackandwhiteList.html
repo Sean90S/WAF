@@ -1,0 +1,299 @@
+<style>
+    md-checkbox.md-checked .md-icon{
+        background-color: #004994;
+    }
+
+    md-tabs md-ink-bar {
+        color: #004994;
+        background: #004994;
+    }
+</style>
+<md-content layout="column" flex>
+    <md-card class="search-section">
+        <form>
+            <div layout="row">
+                <md-input-container flex="none">
+                    <label>选择域名</label>
+                    <input name="clientName" ng-model="event.search.name">
+                </md-input-container>
+                
+                <md-input-container flex="none" class="search-container">
+                    <a class="md-primary btn-operator btn-lg" ng-click="event.searchData()">
+                        <!--  <i class="iconfont icon-search"></i> -->
+                        切换
+                    </a>
+                </md-input-container>
+
+            </div>
+        </form>
+    </md-card>
+
+     <md-card class="table-section">
+      <div ng-cloak>
+        <md-content>
+          <md-tabs md-dynamic-height md-border-bottom>
+          <!-- 全局IP黑名单 -->
+            <md-tab label="自定义IP黑名单">
+              <md-content class="md-padding" layout="column" flex>
+                    <md-card class="search-section">
+                        <form>
+                            <div layout="row">
+                                <md-input-container flex="none">
+                                    <label>IP</label>
+                                    <input name="clientName" ng-model="event.search.ip">
+                                </md-input-container>
+                                <md-input-container flex="none" style="min-width: 120px">
+                                    <label>是否生效</label>
+                                    <md-select name="type" ng-model="event.search.protocol">
+                                        <md-option value="">所有</md-option>
+                                        <md-option value="effect">生效</md-option>
+                                        <md-option value="overdue">过期</md-option>
+                                    </md-select>
+                                </md-input-container>
+                                <md-input-container flex="none" class="search-container">
+                                    <a class="md-primary btn-operator btn-lg" ng-click="event.searchData()">
+                                        <i class="iconfont icon-search"></i>
+                                        查询
+                                    </a>
+                                </md-input-container>
+
+                            </div>
+                        </form>
+                    </md-card>
+                    <md-card class="table-section">
+                        <md-toolbar class="md-table-toolbar md-default"
+                                    ng-hide="event.options.rowSelection && event.selected.length">
+                            <div class="md-toolbar-tools">
+                                <span>自定义IP黑白名单</span>
+                                <a class="md-primary btn-operator"
+                                   ng-click="event.showDialog($event)">
+                                    新 增
+                                </a>
+                                <a class="md-primary btn-operator"
+                                   ng-click="event.FileImport($event)">
+                                    文件导入
+                                </a>
+                                <div flex></div>
+                                <md-button class="md-icon-button" ng-click="event.refresh()">
+                                    <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                                    <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                                </md-button>
+                            </div>
+                        </md-toolbar>
+
+                        <md-toolbar class="md-table-toolbar alternate"
+                                    ng-show="event.options.rowSelection && event.selected.length">
+                            <div class="md-toolbar-tools">
+                                <span>选择了{{event.selected.length}}条记录</span>
+                                <div flex></div>
+                                <span class="batch-operator">
+                                    <label>批量操作</label>
+                                <md-input-container flex="none">
+                                    <md-select ng-model="event.batch_operator" ng-change="event.batch_handle()"
+                                               style="min-width: 96px" placeholder="请选择">
+                                        <md-option value="delete">删除选中</md-option>
+                                        <md-option value="Clearexpired">清空过期IP</md-option>
+                                    </md-select>
+                                </md-input-container>
+                                </span>
+                            </div>
+                        </md-toolbar>
+
+                        <md-table-container>
+                            <table md-table
+                                   md-row-select="event.options.rowSelection"
+                                   multiple="{{event.options.multiSelect}}"
+                                   ng-model="event.selected"
+                                   md-progress="event.promise">
+                                <thead ng-if="!event.options.decapitate" md-head md-on-reorder="logOrder">
+                                <tr md-row>
+                                    <th md-column><span>ID</span></th>
+                                    <th md-column><span>IP段</span></th>
+                                    <th md-column><span>过期时间</span></th>
+                                    <th md-column><span>是否生效</span></th>
+                                    <th md-column><span>描述</span></th>
+                                    <th md-column><span>操作</span></th>
+                                </tr>
+                                </thead>
+                                <tbody md-body>
+                                <tr md-row
+                                    md-select="dessert"
+                                    md-on-select="logItem"
+                                    ng-repeat="dessert in event.desserts.data | limitTo: event.query.limit : (event.query.page -1) * event.query.limit">
+                                    <td md-cell>{{dessert.id}}</td>
+                                    <td md-cell>{{dessert.ip}}</td>
+                                    <td md-cell>{{dessert.past}}</td>
+                                    <td md-cell>{{dessert.protocol}}</td>
+                                    <td md-cell>{{dessert.sentence}}</td>
+                                    <td md-cell class="md-table-operator">
+                                        <md-button class="md-icon-button" aria-label="edit"
+                                                   ng-click="event.showDialog($event,dessert)">
+                                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                            <md-tooltip md-direction="bottom">激活</md-tooltip>
+                                        </md-button>
+                                        <md-button class="md-icon-button" aria-label="delete"
+                                                   ng-click="event.deleteRecord($event,dessert.id)">
+                                            <i class="iconfont icon-remove" aria-hidden="true"></i>
+                                            <md-tooltip md-direction="bottom">删除</md-tooltip>
+                                        </md-button>
+                                    </td>
+                                </tr>
+                                <tr ng-if="event.desserts.data.length === 0">
+                                    <td colspan="7">
+                                        <div class="empty-tips">
+                                            <i class="iconfont icon-no"></i>
+                                            <label>没有查询到数据！</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </md-table-container>
+
+                        <md-table-pagination
+                                md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                                md-limit="event.query.limit" md-limit-options="event.limitOptions"
+                                md-page="event.query.page"
+                                md-total="{{event.desserts.count}}" md-page-select="event.options.pageSelect"
+                                md-boundary-links="event.options.boundaryLinks"
+                                md-on-paginate="event.logPagination"></md-table-pagination>
+                    </md-card>
+              </md-content>
+            </md-tab>
+          <!-- 自定义IP黑名单 -->
+
+            <!-- 自定义IP白名单 -->
+            <md-tab label="自定义IP白名单">
+               <md-content class="md-padding" layout="column" flex>
+                    <md-card class="search-section">
+                        <form>
+                            <div layout="row">
+                                <md-input-container flex="none">
+                                    <label>IP</label>
+                                    <input name="clientName" ng-model="event.search.event">
+                                </md-input-container>
+                                <md-input-container flex="none" style="min-width: 120px">
+                                    <label>是否生效</label>
+                                    <md-select name="type" ng-model="event.search.waf">
+                                        <md-option value="">所有</md-option>
+                                        <md-option value="yes">生效</md-option>
+                                        <md-option value="No">过期</md-option>
+                                    </md-select>
+                                </md-input-container>
+                                <md-input-container flex="none" class="search-container">
+                                    <a class="md-primary btn-operator btn-lg" ng-click="event.searchData()">
+                                        <i class="iconfont icon-search"></i>
+                                        查询
+                                    </a>
+                                </md-input-container>
+
+                            </div>
+                        </form>
+                    </md-card>
+                    <md-card class="table-section">
+                        <md-toolbar class="md-table-toolbar md-default"
+                                    ng-hide="event.options.rowSelection && event.selected.length">
+                            <div class="md-toolbar-tools">
+                                <span>IP黑白名单</span>
+                                <a class="md-primary btn-operator"
+                                   ng-click="event.showDialog($event)">
+                                    新 增
+                                </a>
+                               <a class="md-primary btn-operator"
+                                   ng-click="event.FileImport($event)">
+                                    文件导入
+                                </a>
+                                <div flex></div>
+                                <md-button class="md-icon-button" ng-click="event.refresh()">
+                                    <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                                    <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                                </md-button>
+                            </div>
+                        </md-toolbar>
+
+                        <md-toolbar class="md-table-toolbar alternate"
+                                    ng-show="event.options.rowSelection && event.selected.length">
+                            <div class="md-toolbar-tools">
+                                <span>选择了{{event.selected.length}}条记录</span>
+                                <div flex></div>
+                                <span class="batch-operator">
+                                    <label>批量操作</label>
+                                <md-input-container flex="none">
+                                    <md-select ng-model="event.batch_operator" ng-change="event.batch_handle()"
+                                               style="min-width: 96px" placeholder="请选择">
+                                        <md-option value="delete">删除选中</md-option>
+                                        <md-option value="EmptyexpiredIP">清空过期IP</md-option>
+                                    </md-select>
+                                </md-input-container>
+                                </span>
+                            </div>
+                        </md-toolbar>
+
+                        <md-table-container>
+                            <table md-table
+                                   md-row-select="event.options.rowSelection"
+                                   multiple="{{event.options.multiSelect}}"
+                                   ng-model="event.selected"
+                                   md-progress="event.promise">
+                                <thead ng-if="!event.options.decapitate" md-head md-on-reorder="logOrder">
+                                <tr md-row>
+                                    <th md-column><span>ID</span></th>
+                                    <th md-column><span>IP段</span></th>
+                                    <th md-column><span>过期时间</span></th>
+                                    <th md-column><span>是否生效</span></th>
+                                    <th md-column><span>描述</span></th>
+                                    <th md-column><span>操作</span></th>
+                                </tr>
+                                </thead>
+                                <tbody md-body>
+                                <tr md-row
+                                    md-select="dessert"
+                                    md-on-select="logItem"
+                                    ng-repeat="dessert in event.desserts.data | limitTo: event.query.limit : (event.query.page -1) * event.query.limit">
+                                    <td md-cell>{{dessert.id}}</td>
+                                    <td md-cell>{{dessert.ip}}</td>
+                                    <td md-cell>{{dessert.past}}</td>
+                                    <td md-cell>{{dessert.suspend}}</td>
+                                    <td md-cell>{{dessert.sentence}}</td>
+                                    <td md-cell class="md-table-operator">
+                                        <md-button class="md-icon-button" aria-label="edit"
+                                                   ng-click="event.showDialog($event,dessert)">
+                                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                            <md-tooltip md-direction="bottom">激活</md-tooltip>
+                                        </md-button>
+                                        <md-button class="md-icon-button" aria-label="delete"
+                                                   ng-click="event.deleteRecord($event,dessert.id)">
+                                            <i class="iconfont icon-remove" aria-hidden="true"></i>
+                                            <md-tooltip md-direction="bottom">删除</md-tooltip>
+                                        </md-button>
+                                    </td>
+                                </tr>
+                                <tr ng-if="event.desserts.data.length === 0">
+                                    <td colspan="7">
+                                        <div class="empty-tips">
+                                            <i class="iconfont icon-no"></i>
+                                            <label>没有查询到数据！</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </md-table-container>
+
+                        <md-table-pagination
+                                md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                                md-limit="event.query.limit" md-limit-options="event.limitOptions"
+                                md-page="event.query.page"
+                                md-total="{{event.desserts.count}}" md-page-select="event.options.pageSelect"
+                                md-boundary-links="event.options.boundaryLinks"
+                                md-on-paginate="event.logPagination"></md-table-pagination>
+                    </md-card>
+              </md-content>
+            </md-tab>
+          </md-tabs>
+        </md-content>
+      </div>
+    </md-card>
+    
+</md-content>
+

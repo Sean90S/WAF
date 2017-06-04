@@ -1,0 +1,199 @@
+<style>
+    .filename {
+        width: 300px;
+        height: 30px;
+        line-height: 30px;
+    }
+
+    a {
+        width: 50px;
+        text-align: center;
+        height: 19px;
+        line-height: 19px;
+        position: relative;
+        cursor: pointer;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    a input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+    }
+</style>
+
+<div layout="column" ng-cloak ng-init="vm.$onInit()">
+    <md-content>
+        <form name="projectForm" style="min-width:500px;" class="form"
+              ng-submit="projectForm.$valid && vm.submit()" novalidate>
+            <md-toolbar class="md-default">
+                <div class="md-toolbar-tools">
+                    <h2>{{vm.title}}</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button md-primary" ng-click="vm.cancel()">
+                        <md-icon aria-label="Close dialog">
+                            <i class="iconfont icon-delete2"></i>
+                        </md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">导入类型</label>
+                </div>
+
+                <div flex="66">
+                    <md-input-container class="md-block radio">
+                        <md-radio-group ng-model="vm.scenario.protocol">
+                            <md-radio-button value="Additional" class="md-primary">追加</md-radio-button>
+                            <md-radio-button value="cover" class="md-primary" disabled>覆盖</md-radio-button>
+                        </md-radio-group>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">请选择文件</label>
+                </div>
+                <div flex="66">
+                    <div class="choose-file-area">
+                        <input class="file-name" type="text" readonly="readonly" ng-model="fileItem.name"
+                               style="width: 266px;"/>
+                        <a href="javascript:;" class="md-primary btn-operator"
+                           style="display: inline-block; line-height: 20px; margin-top: -20px; position: relative;top: 16px;">
+                            <input type="file" name="certificate" uploader="uploader" ng-click="vm.clearItems()">浏览
+                        </a>
+                    </div>
+                    <div ng-messages="projectForm.bwList.$invalid">
+                        <div>文件格式：IP掩码，过期时间，例：
+                            "1.1.1.1/32 20161011000000"
+                            时间为空表示永久生效
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div layout="row" layout-wrap>
+                <div flex="30" class="label-text">
+                    <label class="required">描述</label>
+                </div>
+                <div flex="66">
+                    <md-input-container class="md-block">
+                        <input name="sentence" aria-label="sentence" ng-model="vm.bwList.sentence">
+                    </md-input-container>
+                </div>
+            </div>
+
+            <!-- <md-toolbar class="md-default" style="margin-top: 50px;">
+                 <div class="md-toolbar-tools">
+                     <h2 style="color: #004994;">*导入黑名单列表文件格式错误如下，请按正确格式导入文件</h2>
+                 </div>
+             </md-toolbar>-->
+
+            <!-- <table md-table
+                    md-row-select="vm.options.rowSelection"
+                    multiple="{{vm.options.multiSelect}}"
+                    ng-model="vm.selected"
+                    md-progress="vm.promise">
+                 <md-toolbar class="md-default" style="min-height: 40px!important; margin-top: -10px;" >
+                     <div class="md-toolbar-tools">
+                         <h2>格式错误列表：</h2>
+                     </div>
+                 </md-toolbar>
+                 <thead ng-if="!vm.options.decapitate" md-head md-on-reorder="logOrder">
+                 <tr md-row>
+                     <th md-column><span>IP段</span></th>
+                     <th md-column><span>过期时间</span></th>
+                     <th md-column><span>错误原因</span></th>
+                 </tr>
+                 </thead>
+                 <tbody md-body>
+                 <tr md-row
+                     md-select="dessert"
+                     md-on-select="logItem"
+                     ng-repeat="dessert in vm.desserts.data | limitTo: vm.query.limit : (vm.query.page -1) * vm.query.limit">
+                     <td md-cell>{{dessert.isMask}}</td>
+                     <td md-cell>{{dessert.enpireTime}}</td>
+                     <td md-cell>{{dessert.sentence}}</td>
+                 </tr>
+                 <tr ng-if="vm.desserts.data.length === 0">
+                     <td colspan="7">
+                         <div class="empty-tips">
+                             <i class="iconfont icon-no"></i>
+                             <label>没有查询到数据！</label>
+                         </div>
+                     </td>
+                 </tr>
+                 </tbody>
+
+             </table>-->
+
+            <!-- <md-toolbar class="md-default" style="height: 30px!important; margin-top: 30px;">
+                 <div class="md-toolbar-tools">
+                     <h2 style="color: #004994;">*导入黑名单之间或与现有IP黑白名单存在冲突，请确认是否继续导入？冲突IP无法导入。</h2>
+                 </div>
+             </md-toolbar>-->
+
+            <!--<table md-table
+                   md-row-select="vm.options.rowSelection"
+                   multiple="{{vm.options.multiSelect}}"
+                   ng-model="vm.selected"
+                   md-progress="vm.promise">
+                <md-toolbar class="md-default" style="min-height: 40px!important; margin-top: -10px;" >
+                    <div class="md-toolbar-tools">
+                        <h2>存在冲突地IP列表</h2>
+                        <a class="md-primary btn-operator"
+                           ng-click="bwList.showDialog($event)">
+                            导出列表IP
+                        </a>
+                    </div>
+                </md-toolbar>
+                <thead ng-if="!vm.options.decapitate" md-head md-on-reorder="logOrder">
+                <tr md-row>
+                    <th md-column><span>导入IP段</span></th>
+                    <th md-column><span>过期时间</span></th>
+                    <th md-column><span>冲突的其他IP段</span></th>
+                    <th md-column><span>冲突IP黑名单</span></th>
+                    <th md-column><span>冲突IP白名单</span></th>
+                </tr>
+                </thead>
+                <tbody md-body>
+                <tr md-row
+                    md-select="dessert"
+                    md-on-select="logItem"
+                    ng-repeat="dessert in vm.desserts.data | limitTo: vm.query.limit : (vm.query.page -1) * vm.query.limit">
+                    <td md-cell>{{dessert.isMask}}</td>
+                    <td md-cell>{{dessert.enpireTime}}</td>
+                    <td md-cell>{{dessert.isMask}}</td>
+                    <td md-cell>{{dessert.isMask}}</td>
+                    <td md-cell>{{dessert.isMask}}</td>
+                </tr>
+                <tr ng-if="vm.desserts.data.length === 0">
+                    <td colspan="7">
+                        <div class="empty-tips">
+                            <i class="iconfont icon-no"></i>
+                            <label>没有查询到数据！</label>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>-->
+
+            <md-dialog-actions layout="row">
+                <span flex></span>
+                <!--<md-button class="md-primary md-ok"  ng-click="vm.showDialog($event)" type="submit">-->
+                <md-button class="md-primary md-ok" type="submit">
+                    文件导入
+                </md-button>
+                <md-button class="md-default md-cancel" ng-click="vm.cancel()">
+                    取 消
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-content>
+</div>

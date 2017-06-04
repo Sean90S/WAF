@@ -1,0 +1,112 @@
+<style>
+    md-checkbox.md-checked .md-icon{
+        background-color: #004994;
+    }
+</style>
+<md-content layout="column" flex>
+    <md-card class="search-section">
+        <form>
+            <div layout="row">
+                <md-input-container flex="none">
+                    <label>名称</label>
+                    <input name="clientName" ng-model="business.search.requestld">
+                </md-input-container>
+                <md-input-container flex="none" style="min-width: 120px">
+                    <label>是否安全防护</label>
+                    <md-select name="clientName" ng-model="business.search.requestTime">
+                        <md-option value="">所有</md-option>
+                        <md-option value="enabled">是</md-option>
+                        <md-option value="Notenabled">否</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex="none" class="search-container">
+                    <a class="md-primary btn-operator btn-lg" ng-click="business.searchData()">
+                        <i class="iconfont icon-search"></i>
+                        查询
+                    </a>
+                </md-input-container>
+            </div>
+        </form>
+    </md-card>
+
+    <!-- 引擎列表 -->
+
+    <md-card class="table-section">
+        <md-toolbar class="md-table-toolbar md-default"
+                    ng-hide="business.options.rowSelection && business.selected.length">
+            <div class="md-toolbar-tools">
+                <span>引擎组列表</span>
+                <a class="md-primary btn-operator"
+                   ng-click="business.showDialog($event)">
+                    新 增
+                </a>
+                <div flex></div>
+                <md-button class="md-icon-button" ng-click="business.refresh()">
+                    <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                    <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+         <md-table-container>
+            <table md-table
+                   md-row-select="business.options.rowSelection"
+                   multiple="{{business.options.multiSelect}}"
+                   ng-model="business.selected"
+                   md-progress="business.promise">
+                <thead ng-if="!business.options.decapitate" md-head md-on-reorder="logOrder">
+                <tr md-row>
+                    <th md-column><span>名称</span></th>
+                    <th md-column><span>是否安全防护</span></th>
+                    <th md-column><span>是否默认引擎组</span></th>
+                    <th md-column><span>操作</span></th>
+                </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row
+                    md-select="dessert"
+                    md-on-select="logItem"
+                    ng-repeat="dessert in business.desserts.data | limitTo: business.query.limit : (business.query.page -1) * business.query.limit">
+                    <td md-cell>{{dessert.engGrpName}}</td>
+                    <td md-cell>{{dessert.isSecurity}}</td>
+                    <td md-cell>{{dessert.isDefault}}</td>
+                    <td md-cell>{{dessert.uuid}}</td>
+                    <td md-cell class="md-table-operator">
+                        <md-button class="md-icon-button" aria-label="edit"
+                                   ui-sref="manager.engine">
+                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">状态监控</md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="edit"
+                                   ng-click="business.showDialog($event,dessert)">
+                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">修改</md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="delete"
+                                   ng-click="business.deleteRecord($event,dessert.uuid)">
+                            <i class="iconfont icon-remove" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+                <tr ng-if="business.desserts.data.length === 0">
+                    <td colspan="7">
+                        <div class="empty-tips">
+                            <i class="iconfont icon-no"></i>
+                            <label>没有查询到数据！</label>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+        </md-table-container> 
+
+        <md-table-pagination
+                md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                md-limit="business.query.limit" md-limit-options="business.limitOptions"
+                md-page="business.query.page"
+                md-total="{{business.desserts.count}}" md-page-select="business.options.pageSelect"
+                md-boundary-links="business.options.boundaryLinks"
+                md-on-paginate="business.logPagination"></md-table-pagination>
+    </md-card>
+</md-content>

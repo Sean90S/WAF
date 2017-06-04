@@ -1,0 +1,117 @@
+<style>
+    md-checkbox.md-checked .md-icon{
+        background-color: #004994;
+    }
+</style>
+<div layout="column" style="min-width: 750px;" ng-cloak ng-init="vm.$onInit()">
+    <md-content>
+        <form name="projectForm" class="form" ng-submit="projectForm.$valid"
+              novalidate>
+            <md-toolbar class="md-default">
+                <div class="md-toolbar-tools">
+                    <h2>
+                        新增全局IP黑（白）名单存在冲突！</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button md-primary" ng-click="vm.cancel()">
+                        <md-icon aria-label="Close dialog">
+                            <i class="iconfont icon-delete2"></i>
+                        </md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <md-card class="table-section">
+                <md-toolbar class="md-default">
+                    <div class="md-toolbar-tools">
+                        <h2 style="color: #004994;">新增IP【{{vm.ipShow}}】与现有IP名单存在冲突，无法新增！</h2>
+                    </div>
+                </md-toolbar>
+
+                <md-table-container>
+
+                    <table md-table
+                           md-row-select="vm.options.rowSelection"
+                           multiple="{{vm.options.multiSelect}}"
+                           ng-model="vm.selected"
+                           md-progress="vm.promise"
+                           ng-show="vm.BLACK">
+                        <div class="md-toolbar-tools" style="height: 30px!important;">
+                            <h2>冲突地IP{{vm.title}}名单列表：</h2>
+                        </div>
+                        <thead ng-if="!vm.options.decapitate" md-head md-on-reorder="logOrder">
+                        <tr md-row>
+                            <th md-column><span>IP段</span></th>
+                            <th md-column><span>过期时间</span></th>
+                        </tr>
+                        </thead>
+                        <tbody md-body>
+                        <tr md-row
+                            md-select="dessert"
+                            md-on-select="logItem"
+                            ng-repeat="dessert in vm.desserts.data | limitTo: vm.query.limit : (vm.query.page -1) * vm.query.limit">
+                            <td md-cell>{{dessert.ipMask}}</td>
+                            <td md-cell>{{dessert.expireTime}}</td>
+                        </tr>
+                        <tr ng-if="vm.desserts.data.length === 0">
+                            <td colspan="7">
+                                <div class="empty-tips">
+                                    <i class="iconfont icon-no"></i>
+                                    <label>没有查询到数据！</label>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table md-table
+                           md-row-select="vm.options.rowSelection"
+                           multiple="{{vm.options.multiSelect}}"
+                           ng-model="vm.selected"
+                           md-progress="vm.promise"
+                           ng-show="vm.WHITE">
+                        <thead ng-if="!vm.options.decapitate" md-head md-on-reorder="logOrder">
+                        <tr md-row>
+                            <th md-column><span>IP段</span></th>
+                            <th md-column><span>过期时间</span></th>
+                        </tr>
+                        </thead>
+                        <tbody md-body>
+                        <tr md-row
+                            md-select="dessert"
+                            md-on-select="logItem"
+                            ng-repeat="dessert in vm.desserts.data | limitTo: vm.query.limit : (vm.query.page -1) * vm.query.limit">
+                            <td md-cell>{{dessert.ipMask}}</td>
+                            <td md-cell>{{dessert.expireTime}}</td>
+                        </tr>
+                        <tr ng-if="vm.desserts.data.length === 0">
+                            <td colspan="7">
+                                <div class="empty-tips">
+                                    <i class="iconfont icon-no"></i>
+                                    <label>没有查询到数据！</label>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+
+                <!--<md-table-pagination
+                        md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                        md-limit="vm.query.limit" md-limit-options="vm.limitOptions"
+                        md-page="vm.query.page"
+                        md-total="{{vm.desserts.count}}" md-page-select="vm.options.pageSelect"
+                        md-boundary-links="vm.options.boundaryLinks"
+                        md-on-paginate="vm.logPagination"></md-table-pagination>-->
+
+                <md-dialog-actions layout="row">
+                    <span flex></span>
+                    <!--<md-button class="md-primary md-ok" type="submit">
+                        保 存
+                    </md-button>-->
+                    <md-button class="md-default md-cancel" ng-click="vm.cancel()">
+                        取 消
+                    </md-button>
+                </md-dialog-actions>
+            </md-card>
+        </form>
+    </md-content>
+</div>

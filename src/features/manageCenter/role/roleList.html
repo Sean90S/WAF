@@ -1,0 +1,80 @@
+<style>
+    md-checkbox.md-checked .md-icon{
+        background-color: #004994;
+    }
+</style>
+<md-content layout="column" flex>
+    <md-card class="table-section">
+        <md-toolbar class="md-table-toolbar md-default"
+                    ng-hide="role.options.rowSelection && role.selected.length">
+            <div class="md-toolbar-tools">
+                <span>角色管理</span>
+                <a class="md-primary btn-operator"
+                   ng-click="role.showDialog($event)">
+                    新 增
+                </a>
+                <div flex></div>
+                <md-button class="md-icon-button" ng-click="role.refresh()">
+                    <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                    <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-table-container>
+            <table md-table
+                   md-row-select="role.options.rowSelection"
+                   multiple="{{role.options.multiSelect}}"
+                   ng-model="role.selected"
+                   md-progress="role.promise">
+                <thead ng-if="!role.options.decapitate" md-head md-on-reorder="logOrder">
+                <tr md-row>
+                    <th md-column><span>ID</span></th>
+                    <th md-column><span>角色名</span></th>
+                    <th md-column><span>描述</span></th> 
+                    <th md-column><span>操作</span></th>
+                </tr>
+                </thead>
+                <tbody md-body>
+                <tr md-row
+                    md-select="dessert"
+                    md-on-select="logItem"
+                    ng-repeat="dessert in role.desserts.data | limitTo: role.query.limit : (role.query.page -1) * role.query.limit">
+                    <td md-cell>{{dessert.id}}</td>
+                    <td md-cell>{{dessert.name}}</td>
+                    <td md-cell>{{dessert.sentence}}</td> 
+                    <td md-cell class="md-table-operator">
+                        <md-button class="md-icon-button" aria-label="edit"
+                                   ng-click="role.showDialog($event,dessert)">
+                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">权限管理</md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="delet"
+                                   ng-click="role.deleteRecord($event,dessert.id)">
+                            <i class="iconfont icon-remove" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+                <tr ng-if="role.desserts.data.length === 0">
+                    <td colspan="7">
+                        <div class="empty-tips">
+                            <i class="iconfont icon-no"></i>
+                            <label>没有查询到数据！</label>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+
+        <md-table-pagination
+                md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                md-limit="role.query.limit" md-limit-options="role.limitOptions"
+                md-page="role.query.page"
+                md-total="{{role.desserts.count}}" md-page-select="role.options.pageSelect"
+                md-boundary-links="role.options.boundaryLinks"
+                md-on-paginate="role.logPagination"></md-table-pagination>
+    </md-card>
+</md-content>
+

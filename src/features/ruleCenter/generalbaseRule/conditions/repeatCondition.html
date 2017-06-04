@@ -1,0 +1,46 @@
+<div layout="column">
+    <md-content>
+        <md-card md-theme="default" flex="100">
+            <md-subheader class="md-no-sticky">
+                重复条件
+            </md-subheader>
+            <div ng-show="showDetail">
+                <div layout="row" layout-wrap>
+                    <div flex="100" class="label-text">
+                        <label style="width: 90px; display: inline-block;">检测区域：</label>
+                        <md-input-container flex="none" style="width: 110px;">
+                            <input type="checkbox"
+                                   style="width: 15px; height: 15px; color: #3F51B5; vertical-align: middle;"> 头部名重复
+                        </md-input-container>
+
+                        <md-input-container flex="none" style="width: 140px;">
+                            <input type="checkbox"
+                                   style="width: 15px; height: 15px; color: #3F51B5; vertical-align: middle;"> GET参数名重复
+                        </md-input-container>
+
+                        <md-input-container flex="none" style="width: 140px;">
+                            <input type="checkbox"
+                                   style="width: 15px; height: 15px; color: #3F51B5; vertical-align: middle;"> POST参数名重复
+                        </md-input-container>
+
+                        <md-input-container flex="none" style="width: 110px;">
+                            <input type="checkbox"
+                                   style="width: 15px; height: 15px; color: #3F51B5; vertical-align: middle;"> Cookie名重复
+                        </md-input-container>
+
+                    </div>
+                </div>
+
+                <div class="row" layout-wrap>
+                    <div flex="100" class="label-text">
+                        <label style="width: 90px; display: inline-block;">Negative：</label>
+                        <md-input-container class="none radio">
+                            <md-switch ng-model="vm.domain.waf" aria-label="waf" ng-true-value="'enabled'" ng-false-value="'disabled'" class="md-warn">
+                                {{ vm.domain.waf=='enabled' ? '开启':'关闭' }}
+                            </md-switch>
+                        </md-input-container>
+                    </div>
+                </div>
+        </md-card>
+    </md-content>
+</div>

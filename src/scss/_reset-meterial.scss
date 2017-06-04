@@ -1,0 +1,169 @@
+$fontSize14: 0.9em;
+$fontColorDark: #58585A;
+$leftSide: #717171;
+$lineColor: #676666;
+$mainColor: #004994;
+$linkColor: #30659c;
+$checkboxSize: 16px;
+
+@mixin li-active {
+  & > li.active {
+    background: #f7fafc;
+    & > a, & > a > .iconfont {
+      color: #0354a1;
+      font-weight: bolder;
+    }
+  }
+}
+
+body, button, html, input, md-bottom-sheet .md-subheader, select, textarea {
+  font-family: Microsoft YaHei, Hiragino Sans GB, Segoe UI, HelveticaNeue-Light, sans-serif;
+  font-size: $fontSize14;
+}
+
+body {
+  min-width: 1200px;
+}
+
+md-toolbar {
+  min-height: 56px;
+}
+
+md-switch {
+  margin: 2px 0 0 0;
+  display: inline-block;
+  height: 20px;
+  line-height: 22px;
+
+  &.md-checked.md-warn {
+    .md-thumb {
+      background-color: rgb(24, 171, 110);
+    }
+    .md-bar {
+      background-color: rgba(32, 162, 115, 0.5);
+    }
+  }
+
+}
+
+md-checkbox {
+  font-size: $fontSize14;
+  margin-bottom: 0;
+  margin-right: 6px;
+
+  .md-container {
+    width: $checkboxSize;
+    height: $checkboxSize;
+  }
+
+  .md-icon {
+    width: $checkboxSize;
+    height: $checkboxSize;
+    border-width: 1px;
+
+    &:after {
+      left: 4.6px !important;
+      top: 2.22px !important;
+      width: 6.67px !important;
+      height: 10.33px !important;
+    }
+  }
+
+  .md-label {
+    margin-left: 16px;
+    color: $fontColorDark;
+  }
+}
+
+md-radio-button {
+  display: inline-block;
+  margin: 3px 0 5px 0;
+
+  .md-label {
+    font-size: 13px;
+  }
+  .md-off, .md-on {
+    top: 4px;
+    left: 10px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+md-option {
+  height: 26px;
+  ._md-text {
+    font-size: $fontSize14;
+  }
+}
+
+md-select-menu[multiple] md-option {
+  height: 24px;
+
+  ._md-text {
+
+  }
+  &._md-checkbox-enabled {
+    padding-left: 32px;
+
+    ._md-container, ._md-icon {
+      height: 14px;
+      width: 14px;
+    }
+
+  }
+
+  &._md-checkbox-enabled[selected] ._md-icon:after {
+    left: 4px;
+    top: 1px;
+    width: 5.67px;
+    height: 10.33px;
+  }
+}
+
+md-dialog {
+
+  md-dialog-actions {
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+    background: #f7f7f7;
+
+    .md-button {
+      line-height: 20px;
+      min-height: 32px;
+      min-width: 80px;
+      border: 1px solid #bfbebe;
+
+      &.md-ok {
+        color: #fff;
+        background: $mainColor;
+
+        &:hover {
+          background: #004aae;
+        }
+      }
+      &.md-cancel {
+        background: #fff;
+      }
+    }
+  }
+
+  md-toolbar {
+    min-height: 48px;
+    background: none !important;
+    color: #545353 !important;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 8px;
+
+    .md-toolbar-tools {
+      min-height: 50px;
+      height: 50px;
+
+      h2 {
+        font-size: 16px;
+      }
+    }
+
+  }
+
+}

@@ -1,0 +1,55 @@
+<!--left menu start-->
+<md-sidenav class="side-nav"
+            md-is-locked-open="$mdMedia('gt-md')"
+            md-disable-backdrop=""
+            md-component-id="left"
+            md-whiteframe="2"
+>
+    <ul class="side-nav-primary is-visible">
+        <li ui-sref-active="active" ui-sref="manager.domainManager">
+            <a class="md-ink-ripple" href md-button>
+                <i class="iconfont icon-dailishangtubiao"></i>
+                <span> 客户域名管理</span>
+            </a>
+        </li>
+        <li ui-sref-active="active" ui-sref="manager.business" >
+            <a class="md-ink-ripple" href md-button>
+                <i class="iconfont icon-engine"></i>
+                <span> 引擎池管理</span>
+            </a>
+        </li>
+        <li ui-sref-active="active" ui-sref="manager.user" >
+            <a class="md-ink-ripple" href md-button>
+                <i class="iconfont icon-yonghu"></i>
+                <span> 用户管理</span>
+            </a>
+        </li>
+        <li ui-sref-active="active" ui-sref="manager.role">
+            <a class="md-ink-ripple" href md-button>
+                <i class="iconfont icon-role"></i>
+                <span> 角色管理</span>
+            </a>
+        </li>
+            <li ui-sref-active="active" ui-sref="manager.scenario">
+                <a class="md-ink-ripple" href md-button>
+                    <i class="iconfont icon-pinpaishouquan"></i>
+                    <span> 平台授权管理</span>
+                </a>
+            </li>
+        <li ui-sref-active="active">
+            <a class="md-ink-ripple" ui-sref="manager.menu"  md-button>
+                <i class="iconfont icon-xingzhuang22"></i>
+                <span>安全审计</span>
+            </a>
+        </li>
+
+
+    </ul>
+</md-sidenav>
+<!--left menu end-->
+
+<!--content start-->
+<md-content flex ui-view="mainContent" style="padding-bottom: 20px;">
+
+</md-content>
+<!--content end-->

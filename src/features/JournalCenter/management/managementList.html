@@ -1,0 +1,138 @@
+<style>
+    md-checkbox.md-checked .md-icon{
+        background-color: #004994;
+    }
+</style>
+<md-content layout="column" flex>
+    <md-card class="search-section">
+        <form>
+            <div layout="row">
+                <md-input-container flex="none">
+                    <label>选择域名</label>
+                    <input name="clientName" ng-model="management.search.fileName">
+                </md-input-container>
+                <md-input-container flex="none">
+                    <label>URL</label>
+                    <input name="clientName" ng-model="management.search.url">
+                </md-input-container>
+                <md-input-container flex="none">
+                        <md-datepicker ng-model="menu.search.weekday" md-placeholder="操作时间"></md-datepicker>
+                </md-input-container>
+            </div>
+            <div layout="row">
+				<md-input-container flex="none">
+                    <label>攻击IP</label>
+                    <input name="clientName" ng-model="management.search.ip">
+                </md-input-container>
+
+                <md-input-container flex="none" style="min-width: 120px">
+                    <label>攻击类型</label>
+                    <md-select name="type" ng-model="management.search.attack">
+                        <md-option value="">所有</md-option>
+                        <md-option value="SQL">SQL注入</md-option>
+                        <md-option value="XSS">XSS</md-option>
+                        <md-option value="webshell">webshell</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex="none">
+                    <label>规则名</label>
+                    <input name="clientName" ng-model="management.search.name">
+                </md-input-container>
+                <md-input-container flex="none" style="min-width: 120px">
+                    <label>响应动作</label>
+                    <md-select name="type" ng-model="management.search.Response">
+                        <md-option value="">所有</md-option>
+                        <md-option value="intercept">拦截</md-option>
+                        <md-option value="Monitor">监控</md-option>
+                        <md-option value="Dynamic">动态IP黑名单</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex="none" class="search-container">
+                    <a class="md-primary btn-operator btn-lg" ng-click="management.searchData()">
+                        <i class="iconfont icon-search"></i>
+                        查询
+                    </a>
+                </md-input-container>
+            </div>
+        </form>
+    </md-card>
+    <md-card class="table-section">
+        <md-toolbar class="md-table-toolbar md-default"
+                    ng-hide="management.options.rowSelection && management.selected.length">
+            <div class="md-toolbar-tools">
+                <span>日志管理</span>
+                <div flex></div>
+                <md-button class="md-icon-button" ng-click="management.refresh()">
+                    <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                    <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-table-container>
+            <table md-table
+                   md-row-select="management.options.rowSelection"
+                   multiple="{{management.options.multiSelect}}"
+                   ng-model="management.selected"
+                   md-progress="management.promise">
+                <thead ng-if="!management.options.decapitate" md-head md-on-reorder="logOrder">
+                <tr md-row>
+                    <th md-column><span>序号</span></th>
+                    <th md-column><span>攻击时间</span></th>
+                    <th md-column><span>攻击IP</span></th>
+                    <th md-column><span>域名</span></th>
+                    <th md-column><span>URL</span></th>
+                    <th md-column><span>攻击类型</span></th>
+                    <th md-column><span>规则名</span></th>
+                    <th md-column><span>响应动作</span></th>
+                    <th md-column><span>操作</span></th>
+                </tr>
+                </thead>
+                <tbody md-body>
+                <tr md-row
+                    md-select="dessert"
+                    md-on-select="logItem"
+                    ng-repeat="dessert in management.desserts.data | limitTo: management.query.limit : (management.query.page -1) * management.query.limit">
+                    <td md-cell>{{dessert.id}}</td>
+                    <td md-cell>{{dessert.weekday}}</td>
+                    <td md-cell>{{dessert.ip}}</td>
+                    <td md-cell>{{dessert.fileName}}</td>
+                    <td md-cell>{{dessert.url}}</td>
+                    <td md-cell>{{dessert.attack}}</td>
+                    <td md-cell>{{dessert.name}}</td>
+                    <td md-cell>{{dessert.Response}}</td>
+                    <td md-cell class="md-table-operator">
+                        <md-button class="md-icon-button" aria-label="edit"
+                                   ng-click="management.showDialog($event,dessert)">
+                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">修改</md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="delete"
+                                   ng-click="management.deleteRecord($event,dessert.id)">
+                            <i class="iconfont icon-remove" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+                <tr ng-if="management.desserts.data.length === 0">
+                    <td colspan="7">
+                        <div class="empty-tips">
+                            <i class="iconfont icon-no"></i>
+                            <label>没有查询到数据！</label>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+
+        <md-table-pagination
+                md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                md-limit="management.query.limit" md-limit-options="management.limitOptions"
+                md-page="management.query.page"
+                md-total="{{management.desserts.count}}" md-page-select="management.options.pageSelect"
+                md-boundary-links="management.options.boundaryLinks"
+                md-on-paginate="management.logPagination"></md-table-pagination>
+    </md-card>
+</md-content>
+

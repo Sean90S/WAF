@@ -1,0 +1,146 @@
+<style>
+    md-checkbox.md-checked .md-icon{
+        background-color: #004994;
+    }
+</style>
+<md-content layout="column" flex>
+    <md-card class="search-section">
+        <form>
+            <div layout="row">
+                <md-input-container flex="none">
+                    <label>规则名</label>
+                    <input name="clientName" ng-model="general.search.ruleName">
+                </md-input-container>
+
+                <md-input-container flex="none" style="min-width: 120px">
+                    <label>攻击类型</label>
+                    <md-select name="type" ng-model="general.search.attactTypeUuid">
+                        <md-option value="">全部</md-option>
+                        <md-option value="SQL">SQL注入</md-option>
+                        <md-option value="XSS">XSS</md-option>
+                        <md-option value="RFL">RFL</md-option>
+                        <md-option value="download">非法下载</md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container flex="none" style="min-width: 120px">
+                    <label>最高防护动作</label>
+                    <md-select name="type" ng-model="general.search.maxProtectAct">
+                        <md-option value="">全部</md-option>
+                        <md-option value="Monitor">监控</md-option>
+                        <md-option value="intercept">拦截</md-option>
+                        <md-option value="LetterIP">封IP</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex="none" class="search-container">
+                    <a class="md-primary btn-operator btn-lg" ng-click="general.searchData()">
+                        <i class="iconfont icon-search"></i>
+                        查询
+                    </a>
+                </md-input-container>
+
+            </div>
+        </form>
+    </md-card>
+
+    <md-card class="table-section">
+        <md-toolbar class="md-table-toolbar md-default"
+                    ng-hide="general.options.rowSelection && general.selected.length">
+            <div class="md-toolbar-tools">
+                <span>总规则库</span>
+                <a class="md-primary btn-operator" ng-click="general.showDialog($event)">
+                    新 增
+                </a>
+
+                 <a class="md-primary btn-operator" ui-sref="rule.attackType">
+                    规则攻击类型
+                </a>
+                <div flex></div>
+                <md-button class="md-icon-button" ng-click="general.refresh()">
+                    <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                    <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-toolbar class="md-table-toolbar alternate"
+                ng-show="general.options.rowSelection && general.selected.length">
+            <div class="md-toolbar-tools">
+                <span>选择了{{general.selected.length}}条记录</span>
+                <div flex></div>
+                <span class="batch-operator">
+                <label>批量操作</label>
+                <md-input-container flex="none">
+                    <md-select ng-model="general.batch_operator" ng-change="general.batch_handle()"
+                               style="min-width: 96px" placeholder="请选择">
+                        <md-option value="delete">删除</md-option>
+                    </md-select>
+                </md-input-container>
+                </span>
+            </div>
+        </md-toolbar>
+
+
+        <md-table-container>
+            <table md-table
+                   md-row-select="general.options.rowSelection"
+                   multiple="{{general.options.multiSelect}}"
+                   ng-model="general.selected"
+                   md-progress="general.promise">
+                <thead ng-if="!general.options.decapitate" md-head md-on-reorder="logOrder">
+                <tr md-row>
+                    <th md-column><span>序号</span></th>
+                    <th md-column><span>规则名</span></th>
+                    <th md-column><span>攻击类型</span></th>
+                    <th md-column><span>最高防范动作</span></th>
+                    <th md-column><span>描述</span></th>
+                    <th md-column><span>建设配置</span></th>
+                    <th md-column><span>操作</span></th>
+                </tr>
+                </thead>
+                <tbody md-body>
+                <tr md-row
+                    md-select="dessert"
+                    md-on-select="logItem"
+                    ng-repeat="dessert in general.desserts.data | limitTo: general.query.limit : (general.query.page -1) * general.query.limit">
+                    <td md-cell>{{dessert.id}}</td>
+                    <td md-cell>{{dessert.ruleName}}</td>
+                    <td md-cell>{{dessert.attackType}}</td>
+                    <td md-cell>{{dessert.maxProtectAct}}</td>
+                    <td md-cell>{{dessert.description}}</td>
+                    <td md-cell>{{dessert.suggestConf}}</td>
+                    <td md-cell class="md-table-operator">
+                        <md-button class="md-icon-button" aria-label="edit"
+                                   ng-click="general.showDialog($event,dessert)">
+                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">修改</md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="delete"
+                                   ng-click="general.deleteRecord($event,dessert.id)">
+                            <i class="iconfont icon-remove" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+                <tr ng-if="general.desserts.data.length === 0">
+                    <td colspan="7">
+                        <div class="empty-tips">
+                            <i class="iconfont icon-no"></i>
+                            <label>没有查询到数据！</label>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+
+        <md-table-pagination
+                md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                md-limit="general.query.limit" md-limit-options="general.limitOptions"
+                md-page="general.query.page"
+                md-total="{{general.desserts.count}}" md-page-select="general.options.pageSelect"
+                md-boundary-links="general.options.boundaryLinks"
+                md-on-paginate="general.logPagination"></md-table-pagination>
+    </md-card>
+</md-content>
+

@@ -1,0 +1,329 @@
+<style>
+    md-checkbox.md-checked .md-icon {
+        background-color: #004994;
+    }
+
+    md-tabs md-ink-bar {
+        color: #004994;
+        background: #004994;
+    }
+
+
+</style>
+
+<md-content layout="column" flex>
+    <md-card class="table-section">
+        <div ng-cloak>
+            <md-content>
+                <md-tabs md-dynamic-height md-border-bottom>
+                    <!-- 全局IP黑名单 -->
+                    <md-tab label="全局IP黑名单" ng-click="bwList.BLACK()">
+                        <md-content class="md-padding" layout="column" flex>
+                            <md-card class="search-section">
+                                <form>
+                                    <div layout="row">
+                                        <md-input-container flex="none">
+                                            <label>IP</label>
+                                            <input name="clientName" ng-model="bwList.search.ip">
+                                        </md-input-container>
+
+                                        <md-input-container flex="none" style="min-width: 120px">
+                                            <label>是否生效</label>
+                                            <md-select name="type" ng-model="bwList.search.isValid">
+                                                <md-option value="">所有</md-option>
+                                                <md-option value="YES">是</md-option>
+                                                <md-option value="NO">否</md-option>
+                                            </md-select>
+                                        </md-input-container>
+                                        <md-input-container flex="none" class="search-container">
+                                            <a class="md-primary btn-operator btn-lg" ng-click="bwList.searchData()">
+                                                <i class="iconfont icon-search"></i>
+                                                查询
+                                            </a>
+                                        </md-input-container>
+
+                                    </div>
+                                </form>
+                            </md-card>
+
+
+                            <md-card class="table-section">
+                                <md-toolbar class="md-table-toolbar md-default"
+                                            ng-hide="bwList.options.rowSelection && bwList.selected.length">
+                                    <div class="md-toolbar-tools">
+                                        <span>全局IP黑名单</span>
+                                        <a class="md-primary btn-operator" ng-click="bwList.showDialog($event)">
+                                            新 增
+                                        </a>
+
+                                        <a class="md-primary btn-operator"
+                                           ng-click="bwList.showFileImport($event)">
+                                            文件导入
+                                        </a>
+                                        <div flex></div>
+                                        <md-button class="md-icon-button" ng-click="bwList.refresh()">
+                                            <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                                            <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                                        </md-button>
+                                    </div>
+                                </md-toolbar>
+
+                                <md-toolbar class="md-table-toolbar alternate"
+                                            ng-show="bwList.options.rowSelection && bwList.selected.length">
+                                    <div class="md-toolbar-tools">
+                                        <span>选择了{{bwList.selected.length}}条记录</span>
+                                        <div flex></div>
+                                        <span class="batch-operator">
+                                            <label>批量操作</label>
+
+                                            <md-input-container flex="none">
+                                                <md-select ng-model="bwList.batch_operator"
+                                                           ng-change="bwList.batch_handle($event,id)"
+                                                           style="min-width: 96px" placeholder="请选择">
+                                                    {{bwList.select.idGet}}
+                                                    <md-option value="EmptyexpiredIP">清空过期IP</md-option>
+                                                    <md-option value="delete">删除选中</md-option>
+                                                </md-select>
+                                            </md-input-container>
+
+                                        </span>
+                                    </div>
+                                </md-toolbar>
+
+                                <md-table-container>
+                                    <table md-table
+                                           md-row-select="bwList.options.rowSelection"
+                                           multiple="{{bwList.options.multiSelect}}"
+                                           ng-model="bwList.selected"
+                                           md-progress="bwList.promise">
+                                        <thead ng-if="!bwList.options.decapitate" md-head md-on-reorder="logOrder">
+                                        <tr md-row>
+                                            <th md-column><span>ID</span></th>
+                                            <th md-column><span>IP段</span></th>
+                                            <th md-column><span>过期时间</span></th>
+                                            <th md-column><span>是否生效</span></th>
+                                            <th md-column><span>描述</span></th>
+                                            <th md-column><span>最近生效时间</span></th>
+                                            <th md-column><span>操作</span></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody md-body>
+                                        <tr md-row
+                                            md-select="dessert"
+                                            md-on-select="logItem"
+                                            ng-repeat="dessert in bwList.desserts.data | limitTo: bwList.query.limit : (bwList.query.page -1) * bwList.query.limit">
+                                            <td md-cell>{{$index+1}}</td>
+                                            <td md-cell>{{dessert.ipMask}}</td>
+                                            <td md-cell>{{dessert.expireTime | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+                                            <td md-cell>{{dessert.expireTime > bwList.date ? '是' : '否' }}</td>
+                                            <td md-cell>{{dessert.description}}</td>
+                                            <td md-cell>{{dessert.effectiveTime | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+                                            <!--<td md-cell>{{dessert.uuid | date:'yyyy/MM/dd HH:mm:ss'}}</td>-->
+                                            <td md-cell class="md-table-operator">
+                                                <md-button class="md-icon-button" aria-label="edit"
+                                                           ng-click="bwList.showActivation($event,dessert)"
+                                                           ng-if="dessert.expireTime < bwList.date">
+                                                    <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                                    <md-tooltip md-direction="bottom">激活</md-tooltip>
+                                                </md-button>
+
+                                                <md-button class="md-icon-button" aria-label="edit"
+                                                           ng-if="dessert.expireTime > bwList.date"
+                                                           ng-click="bwList.invalidGlobalIp($event,dessert.uuid)">
+                                                    <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                                    <md-tooltip md-direction="bottom">失效</md-tooltip>
+                                                </md-button>
+
+
+                                                <md-button class="md-icon-button" aria-label="delete"
+                                                           ng-click="bwList.deleteRecord($event,dessert.uuid)">
+                                                    <i class="iconfont icon-remove" aria-hidden="true"></i>
+                                                    <md-tooltip md-direction="bottom">删除</md-tooltip>
+                                                </md-button>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="bwList.desserts.data.length === 0">
+                                            <td colspan="7">
+                                                <div class="empty-tips">
+                                                    <i class="iconfont icon-no"></i>
+                                                    <label>没有查询到数据！</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </md-table-container>
+
+                                <md-table-pagination
+                                        md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                                        md-limit="bwList.query.limit" md-limit-options="bwList.rows"
+                                        md-page="bwList.query.page"
+                                        md-total="{{bwList.desserts.count}}" md-page-select="bwList.options.pageSelect"
+                                        md-boundary-links="bwList.options.boundaryLinks"
+                                        md-on-paginate="bwList.logPagination"></md-table-pagination>
+                            </md-card>
+                        </md-content>
+                    </md-tab>
+                    <!-- 全局IP黑名单 -->
+
+                    <!-- 全局IP白名单 -->
+                    <md-tab label="全局IP白名单" ng-click="bwList.WHITE()">
+                        <md-content class="md-padding" layout="column" flex>
+                            <md-card class="search-section">
+                                <form>
+                                    <div layout="row">
+                                        <md-input-container flex="none">
+                                            <label>IP</label>
+                                            <input name="clientName" ng-model="bwList.search.ip">
+                                        </md-input-container>
+
+                                        <!--<md-input-container flex="none" style="min-width: 120px">
+                                            <label>ip类型</label>
+                                            <md-select name="type" ng-model="bwList.search.listType">
+                                                <md-option value="BLACK" selected>黑名单</md-option>
+                                                <md-option value="WHITE">白名单</md-option>
+                                            </md-select>
+                                        </md-input-container>-->
+
+                                        <md-input-container flex="none" style="min-width: 120px">
+                                            <label>是否生效</label>
+                                            <md-select name="type" ng-model="bwList.search.isValid">
+                                                <md-option value="">所有</md-option>
+                                                <md-option value="YES">是</md-option>
+                                                <md-option value="NO">否</md-option>
+                                            </md-select>
+                                        </md-input-container>
+                                        <md-input-container flex="none" class="search-container">
+                                            <a class="md-primary btn-operator btn-lg" ng-click="bwList.searchData()">
+                                                <i class="iconfont icon-search"></i>
+                                                查询
+                                            </a>
+                                        </md-input-container>
+
+                                    </div>
+                                </form>
+                            </md-card>
+
+
+                            <md-card class="table-section">
+                                <md-toolbar class="md-table-toolbar md-default"
+                                            ng-hide="bwList.options.rowSelection && bwList.selected.length">
+                                    <div class="md-toolbar-tools">
+                                        <span>全局IP黑名单</span>
+                                        <a class="md-primary btn-operator" ng-click="bwList.showDialog($event)">
+                                            新 增
+                                        </a>
+
+                                        <a class="md-primary btn-operator"
+                                           ng-click="bwList.showFileImport($event)">
+                                            文件导入
+                                        </a>
+                                        <div flex></div>
+                                        <md-button class="md-icon-button" ng-click="bwList.refresh()">
+                                            <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                                            <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                                        </md-button>
+                                    </div>
+                                </md-toolbar>
+
+                                <md-toolbar class="md-table-toolbar alternate"
+                                            ng-show="bwList.options.rowSelection && bwList.selected.length">
+                                    <div class="md-toolbar-tools">
+                                        <span>选择了{{bwList.selected.length}}条记录</span>
+                                        <div flex></div>
+                                        <span class="batch-operator">
+                                            <label>批量操作</label>
+
+                                            <md-input-container flex="none">
+                                                <md-select ng-model="bwList.batch_operator"
+                                                           ng-change="bwList.batch_handle($event,id)"
+                                                           style="min-width: 96px" placeholder="请选择">
+                                                    {{bwList.select.idGet}}
+                                                    <md-option value="EmptyexpiredIP">清空过期IP</md-option>
+                                                    <md-option value="delete">删除选中</md-option>
+                                                </md-select>
+                                            </md-input-container>
+
+                                        </span>
+                                    </div>
+                                </md-toolbar>
+
+                                <md-table-container>
+                                    <table md-table
+                                           md-row-select="bwList.options.rowSelection"
+                                           multiple="{{bwList.options.multiSelect}}"
+                                           ng-model="bwList.selected"
+                                           md-progress="bwList.promise">
+                                        <thead ng-if="!bwList.options.decapitate" md-head md-on-reorder="logOrder">
+                                        <tr md-row>
+                                            <th md-column><span>ID</span></th>
+                                            <th md-column><span>IP段</span></th>
+                                            <th md-column><span>过期时间</span></th>
+                                            <th md-column><span>是否生效</span></th>
+                                            <th md-column><span>描述</span></th>
+                                            <th md-column><span>最近生效时间</span></th>
+                                            <th md-column><span>操作</span></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody md-body>
+                                        <tr md-row
+                                            md-select="dessert"
+                                            md-on-select="logItem"
+                                            ng-repeat="dessert in bwList.desserts.data | limitTo: bwList.query.limit : (bwList.query.page -1) * bwList.query.limit">
+                                            <td md-cell>{{$index+1}}</td>
+                                            <td md-cell>{{dessert.ipMask}}</td>
+                                            <td md-cell>{{dessert.expireTime | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+                                            <td md-cell>{{dessert.expireTime > bwList.date ? '是' : '否' }}</td>
+                                            <td md-cell>{{dessert.description}}</td>
+                                            <td md-cell>{{dessert.effectiveTime | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+                                            <!--<td md-cell>{{dessert.uuid | date:'yyyy/MM/dd HH:mm:ss'}}</td>-->
+                                            <td md-cell class="md-table-operator">
+                                                <md-button class="md-icon-button" aria-label="edit"
+                                                           ng-click="bwList.showActivation($event,dessert)"
+                                                           ng-if="dessert.expireTime < bwList.date">
+                                                    <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                                    <md-tooltip md-direction="bottom">激活</md-tooltip>
+                                                </md-button>
+
+                                                <md-button class="md-icon-button" aria-label="edit"
+                                                           ng-if="dessert.expireTime > bwList.date"
+                                                           ng-click="bwList.invalidGlobalIp($event,dessert.uuid)">
+                                                    <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                                    <md-tooltip md-direction="bottom">失效</md-tooltip>
+                                                </md-button>
+
+
+                                                <md-button class="md-icon-button" aria-label="delete"
+                                                           ng-click="bwList.deleteRecord($event,dessert.uuid)">
+                                                    <i class="iconfont icon-remove" aria-hidden="true"></i>
+                                                    <md-tooltip md-direction="bottom">删除</md-tooltip>
+                                                </md-button>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="bwList.desserts.data.length === 0">
+                                            <td colspan="7">
+                                                <div class="empty-tips">
+                                                    <i class="iconfont icon-no"></i>
+                                                    <label>没有查询到数据！</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </md-table-container>
+
+                                <md-table-pagination
+                                        md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                                        md-limit="bwList.query.limit" md-limit-options="bwList.rows"
+                                        md-page="bwList.query.page"
+                                        md-total="{{bwList.desserts.count}}" md-page-select="bwList.options.pageSelect"
+                                        md-boundary-links="bwList.options.boundaryLinks"
+                                        md-on-paginate="bwList.logPagination"></md-table-pagination>
+                            </md-card>
+                        </md-content>
+                    </md-tab>
+                </md-tabs>
+            </md-content>
+        </div>
+    </md-card>
+</md-content>

@@ -1,0 +1,122 @@
+<md-content layout="column" flex>
+    <md-card class="search-section">
+        <form>
+            <div layout="row">
+                <md-input-container flex="none">
+                    <label>当前引擎组</label>
+                    <input required name="name" aria-label="name" ng-model="vm.business.name">
+                </md-input-container>
+                <md-input-container flex="none" style="min-width: 120px">
+                    <label>是否开启安全防护</label>
+                    <input name="clientName" ng-model="engine.search.name">
+                </md-input-container>
+
+            </div>
+        </form>
+    </md-card>
+
+    <md-card class="search-section">
+        <form>
+            <div layout="row">
+                <md-input-container flex="none">
+                    <label>主机名</label>
+                    <input name="clientName" ng-model="engine.search.engineName">
+                </md-input-container>
+                <md-input-container flex="none">
+                    <label>IP</label>
+                    <input name="clientName" ng-model="engine.search.ip">
+                </md-input-container>
+                <md-input-container flex="none" style="min-width: 120px">
+                    <label>是否存活</label>
+                    <md-select name="clientName" ng-model="engine.search.isAlive">
+                        <md-option value="">所有</md-option>
+                        <md-option value="YES">是</md-option>
+                        <md-option value="NO">否</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex="none" class="search-container">
+                    <a class="md-primary btn-operator btn-lg" ng-click="engine.searchData()">
+                        <i class="iconfont icon-search"></i>
+                        查询
+                    </a>
+                </md-input-container>
+            </div>
+        </form>
+    </md-card>
+
+    <md-card class="table-section">
+        <md-toolbar class="md-table-toolbar md-default"
+                    ng-hide="engine.options.rowSelection && engine.selected.length">
+            <div class="md-toolbar-tools">
+                <span>引擎列表</span>
+                <div flex></div>
+                <md-button class="md-icon-button" ng-click="engine.refresh()">
+                    <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                    <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-table-container>
+            <table md-table
+                   md-row-select="engine.options.rowSelection"
+                   multiple="{{engine.options.multiSelect}}"
+                   ng-model="engine.selected"
+                   md-progress="engine.promise">
+                <thead ng-if="!engine.options.decapitate" md-head md-on-reorder="logOrder">
+                <tr md-row>
+                    <th md-column><span>IP</span></th>
+                    <th md-column><span>主机名</span></th>
+                    <th md-column><span>是否存活</span></th>
+                    <th md-column><span>上次心跳时间</span></th>
+                    <th md-column><span>操作</span></th>
+                </tr>
+                </thead>
+                <tbody md-body>
+                <tr md-row
+                    md-select="dessert"
+                    md-on-select="logItem"
+                    ng-repeat="dessert in engine.desserts.data | limitTo: engine.query.limit : (engine.query.page -1) * engine.query.limit">
+                    <td md-cell>{{dessert.ip}}</td>
+                    <td md-cell>{{dessert.engineName}}</td>
+                    <td md-cell>{{dessert.isAlive}}</td>
+                    <td md-cell>{{dessert.lastHeartBeatTime}}</td>
+                    <td md-cell class="md-table-operator">
+                        <md-button class="md-icon-button" aria-label="edit"
+                                   ui-sref="manager.engine">
+                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">状态监控</md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="edit"
+                                   ng-click="engine.showDialog($event,dessert)">
+                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">修改</md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="delete"
+                                   ng-click="engine.deleteRecord($event,dessert.id)">
+                            <i class="iconfont icon-remove" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+                <tr ng-if="engine.desserts.data.length === 0">
+                    <td colspan="7">
+                        <div class="empty-tips">
+                            <i class="iconfont icon-no"></i>
+                            <label>没有查询到数据！</label>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+
+        <md-table-pagination
+                md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                md-limit="engine.query.limit" md-limit-options="engine.limitOptions"
+                md-page="engine.query.page"
+                md-total="{{engine.desserts.count}}" md-page-select="engine.options.pageSelect"
+                md-boundary-links="engine.options.boundaryLinks"
+                md-on-paginate="engine.logPagination"></md-table-pagination>
+    </md-card>
+</md-content>

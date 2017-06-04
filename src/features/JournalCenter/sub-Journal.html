@@ -1,0 +1,29 @@
+
+<!--left menu start-->
+<md-sidenav class="side-nav"
+            md-is-locked-open="$mdMedia('gt-md')"
+            md-disable-backdrop=""
+            md-component-id="left"
+            md-whiteframe="2"
+>
+    <ul class="side-nav-primary is-visible">
+        <li ui-sref-active="active" ui-sref="Journal.latest">
+            <a class="md-ink-ripple" href md-button>
+                <i class="iconfont icon-dailishangtubiao"></i>
+                <span> 最新攻击</span>
+            </a>
+        </li>
+        <li ui-sref-active="active" ui-sref="Journal.management">
+            <a class="md-ink-ripple" href md-button>
+                <i class="iconfont icon-engine"></i>
+                <span> 日志管理</span>
+            </a>
+        </li>
+        
+    </ul>
+</md-sidenav>
+<!-- left menu end content start -->
+<md-content flex ui-view="mainContent" style="padding-bottom: 20px;">
+
+</md-content>
+<!--content end-->

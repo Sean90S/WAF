@@ -1,0 +1,109 @@
+<style>
+    md-checkbox.md-checked .md-icon{
+        background-color: #004994;
+    }
+</style>
+<md-content layout="column" flex>
+    <md-card class="search-section">
+        <form>
+            <div layout="row">
+                
+                <md-input-container flex="none">
+                    <label>域名</label>
+                    <input name="clientName" ng-model="ruleTemplate.search.domainName">
+                </md-input-container>
+                <md-input-container flex="none">
+                    <label>规则集名</label>
+                    <input name="clientName" ng-model="ruleTemplate.search.ruleSetName">
+                </md-input-container>
+                
+                <md-input-container flex="none" class="search-container">
+                    <a class="md-primary btn-operator btn-lg" ng-click="ruleTemplate.searchData()">
+                        <i class="iconfont icon-search"></i>
+                        查询
+                    </a>
+                </md-input-container>
+
+            </div>
+        </form>
+    </md-card>
+    <md-card class="table-section">
+        <md-toolbar class="md-table-toolbar md-default"
+                    ng-hide="ruleTemplate.options.rowSelection && ruleTemplate.selected.length">
+            <div class="md-toolbar-tools">
+                <span>规则集管理</span>
+                <div class="md-primary btn-operator" ui-sref="rule.ruleT">
+                    新 增
+                </div>
+                <div flex></div>
+                <md-button class="md-icon-button" ng-click="ruleTemplate.refresh()">
+                    <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                    <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-table-container>
+            <table md-table
+                   md-row-select="ruleTemplate.options.rowSelection"
+                   multiple="{{ruleTemplate.options.multiSelect}}"
+                   ng-model="ruleTemplate.selected"
+                   md-progress="ruleTemplate.promise">
+                <thead ng-if="!ruleTemplate.options.decapitate" md-head md-on-reorder="logOrder">
+                <tr md-row>
+                    <th md-column><span>序号</span></th>
+                    <th md-column><span>规则集名</span></th>
+                    <th md-column><span>是否默认</span></th>
+                    <th md-column><span>相关域名</span></th>
+                    <th md-column><span>操作</span></th>
+                </tr>
+                </thead>
+                <tbody md-body>
+                <tr md-row
+                    md-select="dessert"
+                    md-on-select="logItem"
+                    ng-repeat="dessert in ruleTemplate.desserts.data | limitTo: ruleTemplate.query.limit : (ruleTemplate.query.page -1) * ruleTemplate.query.limit">
+                    <td md-cell>{{dessert.id+1}}</td>
+                    <td md-cell>{{dessert.ruleSetName}}</td>
+                    <td md-cell>{{dessert.isDefaule}}</td>
+                    <td md-cell>{{dessert.relateDomains}}</td>
+                    <td md-cell class="md-table-operator">
+                        <md-button class="md-icon-button" aria-label="edit"
+                                    ui-sref="rule.modify">
+                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">修改</md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="edit"
+                                   ng-click="ruleTemplate.showDialog($event,dessert)">
+                            <i class="iconfont icon-edit" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">复制</md-tooltip>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="delete"
+                                   ng-click="ruleTemplate.deleteRecord($event,dessert.id)">
+                            <i class="iconfont icon-remove" aria-hidden="true"></i>
+                            <md-tooltip md-direction="bottom">删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+                <tr ng-if="ruleTemplate.desserts.data.length === 0">
+                    <td colspan="7">
+                        <div class="empty-tips">
+                            <i class="iconfont icon-no"></i>
+                            <label>没有查询到数据！</label>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+
+        <md-table-pagination
+                md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                md-limit="ruleTemplate.query.limit" md-limit-options="ruleTemplate.limitOptions"
+                md-page="ruleTemplate.query.page"
+                md-total="{{ruleTemplate.desserts.count}}" md-page-select="ruleTemplate.options.pageSelect"
+                md-boundary-links="ruleTemplate.options.boundaryLinks"
+                md-on-paginate="ruleTemplate.logPagination"></md-table-pagination>
+    </md-card>
+</md-content>
+

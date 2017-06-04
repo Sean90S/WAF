@@ -1,0 +1,287 @@
+<style>
+    md-checkbox.md-checked .md-icon{
+        background-color: #004994;
+    }
+</style>
+<div ng-clock>
+    <md-content layout="column" flex>
+        <md-tabs md-dynamic-height md-border-bottom>
+        <!-- 系统操作管理 -->
+
+            <md-tab label="系统操作审计">
+                <md-card class="search-section">
+                    <form>
+                        <!-- 上 -->
+                        <div layout="row">
+                            <md-input-container flex="none">
+                                <label>用户</label>
+                                <input name="accountName" ng-model="menu.search.accountName">
+                            </md-input-container>
+                            <md-input-container flex="none" style="min-width: 120px">
+                                <label>姓名</label>
+                                <input name="name" ng-model="menu.search.name">
+                            </md-input-container>
+
+                            <md-input-container flex="none">
+                                    <md-datepicker ng-model="menu.search.month" md-placeholder="操作时间"></md-datepicker>
+                            </md-input-container>
+                            <md-input-container flex="none">
+                                    <md-datepicker ng-model="menu.search.month" md-placeholder="操作时间"></md-datepicker>
+                            </md-input-container>
+                        </div>
+                        <!-- 上 -->
+
+                        <!-- 下 -->
+                        <div layout="row">
+                            <md-input-container flex="none">
+                                <label>登录IP：</label>
+                                <input name="ip" ng-model="menu.search.ip">
+                            </md-input-container>
+                            <md-input-container flex="none" style="min-width: 120px">
+                                <label>操作模块：</label>
+                                <md-select name="OperationMo" ng-model="menu.search.OperationMo">
+                                    <md-option value="">所有</md-option>
+                                    <md-option value="sql">sql注入</md-option>
+                                    <md-option value="xss">xss</md-option>
+                                    <md-option value="webshell">webshell</md-option>
+                                </md-select>
+                            </md-input-container>
+
+                            <md-input-container flex="none" style="min-width: 120px">
+                                <label>操作动作</label>
+                                <md-select name="OperationAction" ng-model="menu.search.OperationAction">
+                                    <md-option value="">所有</md-option>
+                                    <md-option value="Sign">登录</md-option>
+                                    <md-option value="added">新增</md-option>
+                                    <md-option value="edit">编辑</md-option>
+                                    <md-option value="error">删除</md-option>
+                                </md-select>
+                            </md-input-container>
+
+
+                            <md-input-container flex="none" style="min-width: 120px">
+                                <label>操作状态：</label>
+                                <md-select name="state" ng-model="menu.search.state">
+                                    <md-option value="">所有</md-option>
+                                    <md-option value="success">成功</md-option>
+                                    <md-option value="error">失败</md-option>
+                                </md-select>
+                            </md-input-container>
+                            <md-input-container flex="none" class="search-container">
+                                <a class="md-primary btn-operator btn-lg" ng-click="menu.searchData()">
+                                    <i class="iconfont icon-search"></i>
+                                    查询
+                                </a>
+                            </md-input-container>
+                        </div>
+                        <!-- 下 -->
+                    </form>
+                </md-card>
+                <md-card class="table-section">
+                    <md-toolbar class="md-table-toolbar md-default"
+                                ng-hide="menu.options.rowSelection && menu.selected.length">
+                        <div class="md-toolbar-tools">
+                            <span>查询结果</span>
+                            <div flex></div>
+                            <md-button class="md-icon-button" ng-click="menu.refresh()">
+                                <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                                <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                            </md-button>
+                        </div>
+                    </md-toolbar>
+
+                    <md-table-container>
+                        <table md-table
+                               md-row-select="menu.options.rowSelection"
+                               multiple="{{menu.options.multiSelect}}"
+                               ng-model="menu.selected"
+                               md-progress="menu.promise">
+                            <thead ng-if="!menu.options.decapitate" md-head md-on-reorder="logOrder">
+                            <tr md-row>
+                                <th md-column><span>操作时间</span></th>
+                                <th md-column><span>登录IP</span></th>
+                                <th md-column><span>用户</span></th>
+                                <th md-column><span>姓名</span></th>
+                                <th md-column><span>角色</span></th>
+                                <th md-column><span>操作模块</span></th>
+                                <th md-column><span>操作动作</span></th>
+                                <th md-column><span>操作状态</span></th>
+                                <th md-column><span>详细信息</span></th>
+                            </tr>
+                            </thead>
+                            <tbody md-body>
+                            <tr md-row
+                                md-select="dessert"
+                                md-on-select="logItem"
+                                ng-repeat="dessert in menu.desserts.data | limitTo: menu.query.limit : (menu.query.page -1) * menu.query.limit">
+                                <td md-cell>{{dessert.month}}</td>
+                                <td md-cell>{{dessert.ip}}</td>
+                                <td md-cell>{{dessert.accountName}}</td>
+                                <td md-cell>{{dessert.name}}</td>
+                                <td md-cell>{{dessert.bsAdjective}}</td>
+                                <td md-cell>{{dessert.OperationMo}}</td>
+                                <td md-cell>{{dessert.OperationAction}}</td>
+                                <td md-cell>{{dessert.state}}</td>
+                                <td md-cell class="md-table-operator">
+                                    <md-button class="md-icon-button" aria-label="edit"
+                                               ng-click="menu.showDialog($event,dessert)">
+                                        <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                        <md-tooltip md-direction="bottom">详细信息</md-tooltip>
+                                    </md-button>
+                                </td>
+                            </tr>
+                            <tr ng-if="menu.desserts.data.length === 0">
+                                <td colspan="7">
+                                    <div class="empty-tips">
+                                        <i class="iconfont icon-no"></i>
+                                        <label>没有查询到数据！</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </md-table-container>
+
+                    <md-table-pagination
+                            md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                            md-limit="menu.query.limit" md-limit-options="menu.limitOptions"
+                            md-page="menu.query.page"
+                            md-total="{{menu.desserts.count}}" md-page-select="menu.options.pageSelect"
+                            md-boundary-links="menu.options.boundaryLinks"
+                            md-on-paginate="menu.logPagination"></md-table-pagination>
+                </md-card>
+            </md-tab>
+            <!-- 系统操作管理 -->
+
+            <!-- 云平台操作审计 -->
+
+           <md-tab label="云平台操作审计">
+                <md-card class="search-section">
+                    <form>
+                        <!-- 上 -->
+                        <div layout="row">
+                            <md-input-container flex="none">
+                                <label>用户名</label>
+                                <input name="accountName" ng-model="menu.search.accountName">
+                            </md-input-container>
+
+                            <md-input-container flex="none">
+                                    <md-datepicker ng-model="menu.search.month" md-placeholder="操作时间"></md-datepicker>
+                            </md-input-container>
+                            <md-input-container flex="none">
+                                    <md-datepicker ng-model="menu.search.month" md-placeholder="操作时间"></md-datepicker>
+                            </md-input-container>
+                        </div>
+                        <!-- 上 -->
+
+                        <!-- 下 -->
+                        <div layout="row">
+                            <md-input-container flex="none" style="min-width: 120px">
+                                <label>操作域名</label>
+                                <input name="accountName" ng-model="menu.search.accountName">
+                            </md-input-container>
+
+                            <md-input-container flex="none" style="min-width: 120px">
+                                <label>操作动作</label>
+                                <md-select name="OperationAction" ng-model="menu.search.OperationAction">
+                                    <md-option value="">所有</md-option>
+                                    <md-option value="Sign">登录</md-option>
+                                    <md-option value="added">新增</md-option>
+                                    <md-option value="edit">编辑</md-option>
+                                    <md-option value="error">删除</md-option>
+                                </md-select>
+                            </md-input-container>
+
+
+                            <md-input-container flex="none" style="min-width: 120px">
+                                <label>操作状态：</label>
+                                <md-select name="state" ng-model="menu.search.state">
+                                    <md-option value="">所有</md-option>
+                                    <md-option value="success">成功</md-option>
+                                    <md-option value="error">失败</md-option>
+                                </md-select>
+                            </md-input-container>
+                            <md-input-container flex="none" class="search-container">
+                                <a class="md-primary btn-operator btn-lg" ng-click="menu.searchData()">
+                                    <i class="iconfont icon-search"></i>
+                                    查询
+                                </a>
+                            </md-input-container>
+                        </div>
+                        <!-- 下 -->
+                    </form>
+                </md-card>
+                <md-card class="table-section">
+                    <md-toolbar class="md-table-toolbar md-default"
+                                ng-hide="menu.options.rowSelection && menu.selected.length">
+                        <div class="md-toolbar-tools">
+                            <span>查询结果</span>
+                            <div flex></div>
+                            <md-button class="md-icon-button" ng-click="menu.refresh()">
+                                <i class="iconfont icon-refresh" aria-hidden="true"></i>
+                                <md-tooltip md-direction="bottom">刷新</md-tooltip>
+                            </md-button>
+                        </div>
+                    </md-toolbar>
+
+                    <md-table-container>
+                        <table md-table
+                               md-row-select="menu.options.rowSelection"
+                               multiple="{{menu.options.multiSelect}}"
+                               ng-model="menu.selected"
+                               md-progress="menu.promise">
+                            <thead ng-if="!menu.options.decapitate" md-head md-on-reorder="logOrder">
+                            <tr md-row>
+                                <th md-column><span>操作时间</span></th>
+                                <th md-column><span>用户</span></th>
+                                <th md-column><span>操作域名</span></th>
+                                <th md-column><span>操作动作</span></th>
+                                <th md-column><span>操作状态</span></th>
+                                <th md-column><span>详细信息</span></th>
+                            </tr>
+                            </thead>
+                            <tbody md-body>
+                            <tr md-row
+                                md-select="dessert"
+                                md-on-select="logItem"
+                                ng-repeat="dessert in menu.desserts.data | limitTo: menu.query.limit : (menu.query.page -1) * menu.query.limit">
+                                <td md-cell>{{dessert.month}}</td>
+                                <td md-cell>{{dessert.accountName}}</td>
+                                <td md-cell>{{dessert.jobArea}}</td>
+                                <td md-cell>{{dessert.OperationAction}}</td>
+                                <td md-cell>{{dessert.state}}</td>
+                                <td md-cell class="md-table-operator">
+                                    <md-button class="md-icon-button" aria-label="edit"
+                                               ng-click="menu.showDialog($event,dessert)">
+                                        <i class="iconfont icon-edit" aria-hidden="true"></i>
+                                        <md-tooltip md-direction="bottom">详细信息</md-tooltip>
+                                    </md-button>
+                                </td>
+                            </tr>
+                            <tr ng-if="menu.desserts.data.length === 0">
+                                <td colspan="7">
+                                    <div class="empty-tips">
+                                        <i class="iconfont icon-no"></i>
+                                        <label>没有查询到数据！</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </md-table-container>
+
+                    <md-table-pagination
+                            md-label="{page: '当前页数:', rowsPerPage: '每页:', of: '/'}"
+                            md-limit="menu.query.limit" md-limit-options="menu.limitOptions"
+                            md-page="menu.query.page"
+                            md-total="{{menu.desserts.count}}" md-page-select="menu.options.pageSelect"
+                            md-boundary-links="menu.options.boundaryLinks"
+                            md-on-paginate="menu.logPagination"></md-table-pagination>
+                </md-card>
+            </md-tab>
+
+            <!-- 云平台操作审计 -->
+        </md-tabs>
+    </md-content>
+</div>
+

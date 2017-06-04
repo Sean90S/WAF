@@ -1,0 +1,11 @@
+{
+  "ruleName":"xxx",
+  "conditions":[
+    {
+      "type":"reg",
+      "valid":"url,dddddddd"
+
+    }
+  ]
+
+}

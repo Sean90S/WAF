@@ -1,0 +1,35 @@
+
+<!--left menu start-->
+<md-sidenav class="side-nav"
+            md-is-locked-open="$mdMedia('gt-md')"
+            md-disable-backdrop=""
+            md-component-id="left"
+            md-whiteframe="2"
+>
+    <ul class="side-nav-primary is-visible">
+        <li ui-sref-active="active" ui-sref="event.blackandwhite">
+            <a class="md-ink-ripple" href md-button>
+                <i class="iconfont icon-dailishangtubiao"></i>
+                <span> 自定义IP黑白名单</span>
+            </a>
+        </li>
+        <li ui-sref-active="active" ui-sref="event.urlwhite">
+            <a class="md-ink-ripple" href md-button>
+                <i class="iconfont icon-engine"></i>
+                <span> 自定义URL白名单</span>
+            </a>
+        </li>
+        <li ui-sref-active="active" ui-sref="event.custom">
+            <a class="md-ink-ripple" href md-button>
+                <i class="iconfont icon-yonghu"></i>
+                <span> 域名基础策略配置</span>
+            </a>
+        </li>
+        
+    </ul>
+</md-sidenav>
+<!-- left menu end content start -->
+<md-content flex ui-view="mainContent" style="padding-bottom: 20px;">
+
+</md-content>
+<!--content end-->
